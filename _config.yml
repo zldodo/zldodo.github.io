@@ -8,7 +8,7 @@ subtitle: 渡渡今天不想飞
 description: 
 author: Dodo
 language: zh-CN
-keywords:
+#keywords:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -34,7 +34,7 @@ titlecase: false # Transform title into titlecase
 external_link: true # Open external links in new tab
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 highlight:
@@ -74,6 +74,7 @@ pagination_dir: page
 ## Themes: https://hexo.io/themes/
 #theme: landscape
 theme: maupassant
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
