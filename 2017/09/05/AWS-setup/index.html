@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>搭建AWS云计算配置环境 | Dodo's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + 'ec960c46e380c64608cff1436f1e80aa';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();</script></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">搭建AWS云计算配置环境</h1><a id="logo" href="/.">Dodo's Blog</a><p class="description">渡渡今天不想飞</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/words"><i class="fa fa-pencil-square"> 只言片语</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">搭建AWS云计算配置环境</h1><div class="post-meta">Sep 5, 2017<span> | </span><span class="category"><a href="/categories/探知/">探知</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" data-disqus-identifier="2017/09/05/AWS-setup/" href="/2017/09/05/AWS-setup/#disqus_thread"></a><div class="post-content"><p>实操是快速有效掌握一门知识的最好途径。随着AI崛起，许多科技热点不断涌现，机器学习当属个中翘楚。想要愉快玩耍机器学习，自然离不开GPU的支持。但对于新手入门，想要自己搭建GPU服务器，工程量显得有些大；再加上囊中羞涩，个人购买GPU实在有些困难。在这种情况下，云计算服务是一个不错的选择。</p>
+<h1 id="什么是云计算？"><a href="#什么是云计算？" class="headerlink" title="什么是云计算？"></a>什么是云计算？</h1><p>简单说来，云计算就是通过 Internet（“云”）交付服务器、存储空间、数据库、网络、软件和分析等计算服务。提供这些计算服务的公司称为云提供商，他们通常基于用户使用对云计算服务进行收费，类似于家用水电的计费方式。</p>
+<h1 id="云计算服务提供商"><a href="#云计算服务提供商" class="headerlink" title="云计算服务提供商"></a>云计算服务提供商</h1><ul>
+<li><p>AWS<br>亚马逊出品，市场老大，商业云计算名义上的先驱，主要针对企业级用户，特别是在国内没有开放个人账户。</p>
+</li>
+<li><p>Azure<br>微软出品，与自家产品无线缝合，一条龙服务，正在追赶AWS。</p>
+</li>
+<li><p>APP engine<br>谷歌出品，大名鼎鼎Mapduce框架的提出者，在分布式计算和分布式存储方面掌握核心科技。</p>
+</li>
+<li><p>OVH<br>一家法国公司，价格比较低，性价比高。</p>
+</li>
+<li><p>阿里云<br>阿里巴巴出品，在全球来看算是第二梯队的厂商，拥有本土优势。</p>
+</li>
+</ul>
+<h1 id="AWS环境搭建"><a href="#AWS环境搭建" class="headerlink" title="AWS环境搭建"></a>AWS环境搭建</h1><p>最近正在学习一门MOOC课程，叫<a href="http://course.fast.ai/index.html" target="_blank" rel="noopener">Practical Deep Learning for Coders</a>, 由 JEREMY HOWARD （President Kaggle ）讲授，AWS是这门课推荐，所以我也就一个一个轮子地搭建AWS GPU server。</p>
+<p>首先，推荐观看这个<a href="https://www.youtube.com/watch?v=8rjRfW4JM2I" target="_blank" rel="noopener">新手指南视频</a>,配套有<a href="http://wiki.fast.ai/index.php/AWS_install" target="_blank" rel="noopener">wiki page</a>,里面有常见问题的解决办法。如果有些问题wiki页面里没有涉及，你可以在这个<a href="http://forums.fast.ai/" target="_blank" rel="noopener">论坛</a>查找和询问。最终，你一定能得到解决办法的。</p>
+<p>AWS GPU server的搭建过程我不祥述，上面的新手指南和wiki已经说明得十分详细，下面主要罗列出我在搭建环境中遇到问题及解决方法，方便大家使用。</p>
+<h2 id="Errors-bash-setup-p2-sh-or-setup-t2-sh"><a href="#Errors-bash-setup-p2-sh-or-setup-t2-sh" class="headerlink" title="Errors: bash setup_p2.sh or setup_t2.sh"></a>Errors: bash setup_p2.sh or setup_t2.sh</h2><p>我在这儿卡壳了很久，遇到了许多奇奇怪怪的错误。而且，我也发现这部分是论坛里面大家问的最多的地方。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setup_t2.sh: line 7: syntax error near unexpected token `newline&apos;</span><br><span class="line">setup_t2.sh: line 7: `&lt;!DOCTYPE html&gt;&apos;</span><br></pre></td></tr></table></figure><br>setup_t2.sh 格式问题，不应是HTML格式 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&apos;\r&apos;: command not found</span><br></pre></td></tr></table></figure>
+<p>setup_t2.sh 格式问题，用notepad++z转换成UNIX格式</p>
+<p>后面发现，这两个问题同属同一个原因：当使用<code>wget url</code>时，复制的地址下载的是html 格式文件，而不是我们需要的.sh或者.py格式。解决办法是在github里clone所需文件，然后复制到cygwin下面的目录。另外，我还发现了一个办法，从论坛<a href="http://forums.fast.ai/t/unreadable-notebook-home-ubuntu-nbs-lesson1-ipynb-notjsonerror-notebook-does-not-appear-to-be-json/2966/4" target="_blank" rel="noopener">这里</a>搬运来的。具体是在github中选择文件的 view-raw模式，然后复制地址，就可以使用<code>wget</code>的方式下载文件了。</p>
+<h2 id="Error-：ssh-command-not-found"><a href="#Error-：ssh-command-not-found" class="headerlink" title="Error ：ssh command not found"></a>Error ：ssh command not found</h2><p>需要安装一下openssh<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-cyg install openssh</span><br></pre></td></tr></table></figure></p>
+<h2 id="Start-Over-with-AWS步骤"><a href="#Start-Over-with-AWS步骤" class="headerlink" title="Start Over with AWS步骤"></a>Start Over with AWS步骤</h2><p>若遇到实在无法解决的错误，可以考虑重新安装一次，参考<a href="http://wiki.fast.ai/index.php/Starting_Over_with_AWS" target="_blank" rel="noopener">Start Over with AWS</a><br><strong> 切记</strong>！！！要删除.pem,通过<code>rm ~/.ssh/aws-key-fast-ai.pem</code>。</p>
+<h2 id="Error-occurred-AddressLimitExceeded"><a href="#Error-occurred-AddressLimitExceeded" class="headerlink" title="Error occurred (AddressLimitExceeded)"></a>Error occurred (AddressLimitExceeded)</h2><p>这是因为Elastic IP或者VPCs超过指定数量，我测试了下，似乎不允许炒过5个。<br>release Elastic IP和delete your VPCs 的步骤见<a href="http://wiki.fast.ai/index.php/Starting_Over_with_AWS" target="_blank" rel="noopener">Start Over with AWS</a>。</p>
+<p><strong> Tips:每次bash前，需关闭所有Instance </strong></p>
+<h2 id="启动AWS"><a href="#启动AWS" class="headerlink" title="启动AWS"></a>启动AWS</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">source aws-alias.sh</span><br><span class="line">alias</span><br><span class="line">aws-get-p2</span><br><span class="line">aws-start</span><br><span class="line">aws-ssh</span><br></pre></td></tr></table></figure>
+<p>可将<code>source aws-alias.sh</code>写入<code>vim .bashrc</code>。<br>若出现<code>vim command not found</code>，这是因为缺少vim安装包。重新启动cygwin的setup.exe，默认安装，直到选择packages。选择 vim安装包，下一步安装。</p>
+<h2 id="vim-使用"><a href="#vim-使用" class="headerlink" title="vim 使用"></a>vim 使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i 插入模式</span><br><span class="line">esc 命令模式</span><br><span class="line">:q 退出</span><br><span class="line">:wq 保存退出</span><br></pre></td></tr></table></figure>
+<p><strong> 走到这一步，AWS配置就基本完成啦</strong></p>
+<h1 id="好用的终端小工具"><a href="#好用的终端小工具" class="headerlink" title="好用的终端小工具"></a>好用的终端小工具</h1><p>tmux是linux中一种管理窗口的程序, 它提供了一个Session随时存储和恢复的功能, detach Session(保持Session后台运行)然后重新attach Session。</p>
+<blockquote>
+<p>常用场景, 在公司Terimal中开了多个标签和文件, 下班回家忽然有了灵感想要继续编写, 使用ssh远程链接公司电脑, 然后发现标签页和文件都要重新打开, 如果使用Tmux, 下班了detach当前Session, 回家ssh远程连接后, attach Session后, 场景恢复又能愉快的继续编程了…</p>
+</blockquote>
+<h2 id="tmux使用"><a href="#tmux使用" class="headerlink" title="tmux使用"></a>tmux使用</h2><p>前缀键<code>Crtl+b</code><br>按过前缀键后，然后按一下c =创建新窗口<br>按过前缀键后，然后按一下% =水平分割<br>按过前缀键后，然后按一下” =垂直分割</p>
+<p>基于前缀键，还有常用的其他命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">o swap panes</span><br><span class="line">q show pane numbers</span><br><span class="line">x kill pane</span><br></pre></td></tr></table></figure></p>
+<p><strong> 如有任何AWS配置安装问题，欢迎在评论中交流哈~</strong></p>
+</div><div class="tags"><a href="/tags/GPU/">GPU</a><a href="/tags/Deep-Learning/">Deep Learning</a><a href="/tags/Windows/">Windows</a></div><div class="post-nav"><a class="pre" href="/2017/09/08/很久以前/">很久以前</a><a class="next" href="/2017/09/03/腾讯产培生面经/">腾讯产培生面经</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://zldodo.github.io/2017/09/05/AWS-setup/';
+    this.page.identifier = '2017/09/05/AWS-setup/';
+    this.page.title = '搭建AWS云计算配置环境';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//zldodo-1.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//zldodo-1.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://zldodo-1.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://zldodo.github.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/喜爱/">喜爱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/探知/">探知</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日记/">日记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/积累/">积累</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/音乐/" style="font-size: 15px;">音乐</a> <a href="/tags/童话/" style="font-size: 15px;">童话</a> <a href="/tags/情绪/" style="font-size: 15px;">情绪</a> <a href="/tags/SLAM/" style="font-size: 15px;">SLAM</a> <a href="/tags/Cartographer/" style="font-size: 15px;">Cartographer</a> <a href="/tags/GPU/" style="font-size: 15px;">GPU</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/阅读/" style="font-size: 15px;">阅读</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/心情/" style="font-size: 15px;">心情</a> <a href="/tags/梦/" style="font-size: 15px;">梦</a> <a href="/tags/求职/" style="font-size: 15px;">求职</a> <a href="/tags/琐碎/" style="font-size: 15px;">琐碎</a> <a href="/tags/人群/" style="font-size: 15px;">人群</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/VPS/" style="font-size: 15px;">VPS</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/城市/" style="font-size: 15px;">城市</a> <a href="/tags/随想/" style="font-size: 15px;">随想</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/成长/" style="font-size: 15px;">成长</a> <a href="/tags/尝试/" style="font-size: 15px;">尝试</a> <a href="/tags/诗歌/" style="font-size: 15px;">诗歌</a> <a href="/tags/课程/" style="font-size: 15px;">课程</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/01/01/The-old-man-and-the-sea/">整理·THE OLD MAN ANF THE SEA</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/21/我从未见过荒野/">我从未见过荒野</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/蝴蝶夫人/">蝴蝶夫人写给平克尔顿先生</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/致读书/">致读书</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/一桩奇案/">一桩奇案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/28/84CharingCrossRoad/">读后·《84，CHARING CROSS ROAD》</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/树之生命木之心-地卷/">摘录·树之生命木之心-地卷</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/07/生病杂谈/">生病杂谈</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/01/new-year-2018/">New-Year-2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/无题/">无题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//zldodo-1.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Dodo's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

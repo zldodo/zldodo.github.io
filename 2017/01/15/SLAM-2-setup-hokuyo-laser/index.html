@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Hokuyo laser安装与配置 | Dodo's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + 'ec960c46e380c64608cff1436f1e80aa';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();</script></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Hokuyo laser安装与配置</h1><a id="logo" href="/.">Dodo's Blog</a><p class="description">渡渡今天不想飞</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/words"><i class="fa fa-pencil-square"> 只言片语</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Hokuyo laser安装与配置</h1><div class="post-meta">Jan 15, 2017<span> | </span><span class="category"><a href="/categories/探知/">探知</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" data-disqus-identifier="2017/01/15/SLAM-2-setup-hokuyo-laser/" href="/2017/01/15/SLAM-2-setup-hokuyo-laser/#disqus_thread"></a><div class="post-content"><ol>
+<li><p>安装<br> Indigo以上的ROS版本需要使用urg_node进行配置<br> 首先安装urg_node package</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ros-kinetic-urg-node</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给Hokuyo供电，并与电脑连接</p>
+</li>
+<li><p>配置Hokuyo<br> 确保你的urg_node能连接到Hokuyo laser scanner<br> 索取Hokuyo的权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -l /dev/ttyACM0</span><br></pre></td></tr></table></figure>
+<p> 你将看见跟下面相似的内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crw-rw-XX- 1 root dialout 166, 0 2009-10-27 14:18 /dev/ttyACM0</span><br></pre></td></tr></table></figure>
+<p> 如果XX是rw，已成功配置。<br> 如果XX是–: 配置失败，你需要输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod a+rw /dev/ttyACM0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行<br> 在一个新的终端，输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></table></figure>
+<p> 在一个新的终端，运行urg_node</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun urg_node urg_node</span><br></pre></td></tr></table></figure>
+<p> 你将看到跟下面相似的内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ INFO] [1487840172.986999317]: Connected to serial device with intensity and ID: H1309434</span><br><span class="line">[ INFO] [1487840173.246729503]: Streaming data.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可视化数据<br> 在新的终端输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rviz</span><br></pre></td></tr></table></figure>
+<p> 将Fixed Frame里的map改为laser<br> 然后添加laserscan，并将其中Topic的空白选项改为/scan</p>
+</li>
+</ol>
+</div><div class="tags"><a href="/tags/SLAM/">SLAM</a><a href="/tags/Cartographer/">Cartographer</a></div><div class="post-nav"><a class="pre" href="/2017/04/29/inteview-TST/">腾讯暑期实习一面</a><a class="next" href="/2017/01/14/SLAM-1-setup-cartographer/">Cartographer安装与配置</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://zldodo.github.io/2017/01/15/SLAM-2-setup-hokuyo-laser/';
+    this.page.identifier = '2017/01/15/SLAM-2-setup-hokuyo-laser/';
+    this.page.title = 'Hokuyo laser安装与配置';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//zldodo-1.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//zldodo-1.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://zldodo-1.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://zldodo.github.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/喜爱/">喜爱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/探知/">探知</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日记/">日记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/积累/">积累</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/音乐/" style="font-size: 15px;">音乐</a> <a href="/tags/童话/" style="font-size: 15px;">童话</a> <a href="/tags/情绪/" style="font-size: 15px;">情绪</a> <a href="/tags/SLAM/" style="font-size: 15px;">SLAM</a> <a href="/tags/Cartographer/" style="font-size: 15px;">Cartographer</a> <a href="/tags/GPU/" style="font-size: 15px;">GPU</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/阅读/" style="font-size: 15px;">阅读</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/心情/" style="font-size: 15px;">心情</a> <a href="/tags/梦/" style="font-size: 15px;">梦</a> <a href="/tags/求职/" style="font-size: 15px;">求职</a> <a href="/tags/琐碎/" style="font-size: 15px;">琐碎</a> <a href="/tags/人群/" style="font-size: 15px;">人群</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/VPS/" style="font-size: 15px;">VPS</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/城市/" style="font-size: 15px;">城市</a> <a href="/tags/随想/" style="font-size: 15px;">随想</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/成长/" style="font-size: 15px;">成长</a> <a href="/tags/尝试/" style="font-size: 15px;">尝试</a> <a href="/tags/诗歌/" style="font-size: 15px;">诗歌</a> <a href="/tags/课程/" style="font-size: 15px;">课程</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/01/01/The-old-man-and-the-sea/">整理·THE OLD MAN ANF THE SEA</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/21/我从未见过荒野/">我从未见过荒野</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/蝴蝶夫人/">蝴蝶夫人写给平克尔顿先生</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/致读书/">致读书</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/一桩奇案/">一桩奇案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/28/84CharingCrossRoad/">读后·《84，CHARING CROSS ROAD》</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/树之生命木之心-地卷/">摘录·树之生命木之心-地卷</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/07/生病杂谈/">生病杂谈</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/01/new-year-2018/">New-Year-2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/无题/">无题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//zldodo-1.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Dodo's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

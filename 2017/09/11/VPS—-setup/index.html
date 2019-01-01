@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega | Dodo's Blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.3.1/jquery.min.js"></script><link rel="icon" mask="" sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = 'https://hm.baidu.com/hm.js?' + 'ec960c46e380c64608cff1436f1e80aa';
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();</script></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega</h1><a id="logo" href="/.">Dodo's Blog</a><p class="description">渡渡今天不想飞</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/words"><i class="fa fa-pencil-square"> 只言片语</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega</h1><div class="post-meta">Sep 11, 2017<span> | </span><span class="category"><a href="/categories/探知/">探知</a></span><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><a class="disqus-comment-count" data-disqus-identifier="2017/09/11/VPS—-setup/" href="/2017/09/11/VPS—-setup/#disqus_thread"></a><div class="post-content"><p>时代发展至今，自然环境已阻挡不了人们去寻觅世界的每一个角落。上山下海，无所不行。即便如此，却总有痴妄的人试图建立起一座隐形的高墙，去阻隔所谓的“外来腐化思想”。然而，思想的自由流通，理应不该受到这样的百般阻扰。于是，VPS为那些追求“独立之精神，自由之思想”理念的人开辟了一条绿色通道。</p>
+<p>主流的VPS（虚拟主机）服务器提供商有三家：</p>
+<ul>
+<li>linode</li>
+<li>digital ocean</li>
+<li>bandwagon<br>针对个人用户，bandwagon是个不错选择，并且支持支付宝付款。</li>
+</ul>
+<h2 id="购买VPS服务"><a href="#购买VPS服务" class="headerlink" title="购买VPS服务"></a>购买VPS服务</h2><p><a href="https://www.bwh1.net/" target="_blank" rel="noopener">购买链接</a><br><a href="http://www.laozuo.org/bandwagonhost" target="_blank" rel="noopener">选型参考</a><br>付款成功后，查看你所购买的VPS服务端的详细信息，点击<code>KiwiVM Control Panel</code><br>将会看到VPS登录用的IP和port信息。</p>
+<p>然后，点击左侧的<code>Install new OS</code>,选择在Main controls中列出的Operating System 信号，例如 Centos 6 x86 bbr，即可获得root_password和port信息。</p>
+<p>以上操作获得的IP，port和root_password将会在后面使用到。</p>
+<h2 id="配置服务端"><a href="#配置服务端" class="headerlink" title="配置服务端"></a>配置服务端</h2><p>下面，我们将远程登录到海外服务器，基于上面已经获取的IP，port和root_password的信息。</p>
+<p>Window用户SSH登录需要<a href="http://www.netsarang.com/download/down_form.html?code=522&amp;utm_source=textarea.com&amp;utm_medium=textarea.com&amp;utm_campaign=article" target="_blank" rel="noopener">Xshell</a></p>
+<h3 id="Xshell-登录-VPS"><a href="#Xshell-登录-VPS" class="headerlink" title="Xshell 登录 VPS"></a>Xshell 登录 VPS</h3><p>选择免费的Home&amp;School user，下载，安装。然后按照Xshell使用的<a href="https://www.netsarang.com/tutorial/xshell/2776/Getting_Started?status=1&amp;page=1&amp;s_type=&amp;s_text=" target="_blank" rel="noopener">官方教程</a>配置好IP和port。设置用户默认为root,注意这里要的password即是上面获得root_password。</p>
+<p>登录成功后，命令行中将显示<code>[root@host ~]#</code>.</p>
+<p>根据你购买的服务器端的操作系统，选择安装shadowsocks，可<a href="https://www.textarea.com/ExpectoPatronum/shiyong-shadowsocks-kexue-shangwang-265/" target="_blank" rel="noopener">参考链接</a>。<br>我的是CentOS, 所以安装命令是这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install python-setuptools &amp;&amp; easy_install pip</span><br><span class="line">pip install shadowsocks</span><br></pre></td></tr></table></figure>
+<p>如果<code>easy_install pip</code>找不到安装包，则使用以下办法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py</span><br></pre></td></tr></table></figure></p>
+<h3 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h3><p>下面配置shadowsocks启动参数文件。</p>
+<p>shadowsocks启动时的参数，如服务器端口，代理端口，登录密码等，可以通过启动时的命令行参数来设定，也可以通过json格式的配置文件设定。推荐使用配置文件，方便查看和修改。</p>
+<p>用vi新建一个配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/shadowsocks.json</span><br></pre></td></tr></table></figure></p>
+<p>然后输入如下内容<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">   &quot;server&quot;:&quot;my_server_ip&quot;, </span><br><span class="line">   &quot;server_port&quot;:&quot;server_port&quot;, </span><br><span class="line">   &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">   &quot;local_port&quot;:1080, </span><br><span class="line">   &quot;password&quot;:&quot;mypassword&quot;,</span><br><span class="line">   &quot;timeout&quot;:300, </span><br><span class="line">   &quot;method&quot;:&quot;aes-256-cfb&quot;, </span><br><span class="line">   &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>要是为了多个用户端使用，那就按下面的格式设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">   &quot;server&quot;:&quot;my_server_ip&quot;, </span><br><span class="line">   &quot;port_password&quot;:&#123;</span><br><span class="line">   &quot;server_port1&quot;:&quot;password1&quot;,</span><br><span class="line">   &quot;server_port2&quot;:&quot;password2&quot;,</span><br><span class="line">   &quot;server_port2&quot;:&quot;password2&quot;</span><br><span class="line">   &#125;</span><br><span class="line">   &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">   &quot;local_port&quot;:1080, </span><br><span class="line">   &quot;timeout&quot;:300, </span><br><span class="line">   &quot;method&quot;:&quot;aes-256-cfb&quot;, </span><br><span class="line">   &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="启动shadowsocks"><a href="#启动shadowsocks" class="headerlink" title="启动shadowsocks"></a>启动shadowsocks</h3><p>如果已经写好了配置文件，启动shadowsocks服务器的命令如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d start</span><br><span class="line">ssserver -c /etc/shadowsocks.json -d stop</span><br></pre></td></tr></table></figure></p>
+<p>另外，要是后面又修改了配置文件，重新启动shadowsocks的命令是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d restart</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置客户端"><a href="#配置客户端" class="headerlink" title="配置客户端"></a>配置客户端</h2><p>首先，需要下载客户端。Windows用户请移步<a href="https://github.com/shadowsocks/shadowsocks-windows/releases?utm_source=textarea.com&amp;utm_medium=textarea.com&amp;utm_campaign=article" target="_blank" rel="noopener">这里下载</a>，其他用户请参考<a href="https://github.com/shadowsocks" target="_blank" rel="noopener">Github资源</a>。</p>
+<p>解压，然后运行.exe文件，在工具栏里出现“小飞机”图标，右击选择<em>服务器</em>-&gt;<em>编辑服务器</em>，出现一个窗口，填入已在服务端设置好的信息，my_server_ip，server_port，password。</p>
+<p>然后右击“小飞机”图标，点击<em>启动系统代理</em>，就可以畅通无阻地愉快上网啦~</p>
+<h2 id="配置自动切换代理"><a href="#配置自动切换代理" class="headerlink" title="配置自动切换代理"></a>配置自动切换代理</h2><p><strong> 为什么要配置自动切换代理？</strong></p>
+<blockquote>
+<p>Windows和macOS客户端支持全局代理和PAC代理两种方式，后者会使用一个脚本来自动检查一个网站是否在需要代理的网站列表中，自动选择直接连接或代理连接。</p>
+</blockquote>
+<p>PAC列表可以在线更新，但是难免有收录不全的情况。如果你用Chrome,可以使用支持自定义规则的代理管理插件来实现自动切换代理，比如switchyOmega。</p>
+<p>在Chrome应用商店里安装switchyOmega，然后进入switchyOmega的配置界面。</p>
+<h3 id="创建情景模式"><a href="#创建情景模式" class="headerlink" title="创建情景模式"></a>创建情景模式</h3><p>新建一个情景模式，比如叫SS，代理协议选择socks5，代理地址为127.0.0.1，端口1080。</p>
+<h3 id="设置自动切换模式"><a href="#设置自动切换模式" class="headerlink" title="设置自动切换模式"></a>设置自动切换模式</h3><p>在设置界面选择自动切换模式，在“切换规则”中勾选“规则列表规则”，对应的情景模式选择刚刚新建的SS。</p>
+<p>然后在下面的规则列表地址中填写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt</span><br></pre></td></tr></table></figure></p>
+<p>规则列表格式选择AutoProxy。这是一个一直在维护的被墙网站列表，项目地址是<a href="https://github.com/gfwlist/gfwlist。" target="_blank" rel="noopener">https://github.com/gfwlist/gfwlist。</a></p>
+<p>然后点击立即更新情景模式， 更新完成后会有提示。</p>
+<p>点击左侧的“应用选项”。然后单击switchyOmega图标，选择自动切换，就可以在访问“不存在的网站”时自动切换到shadowsocks代理了。</p>
+<h3 id="添加自定义规则"><a href="#添加自定义规则" class="headerlink" title="添加自定义规则"></a>添加自定义规则</h3><p>如果遇到某个国外网站无法直接连接或速度太慢时，可以单击switchyOmega图标，选择“添加条件”，情景模式选择SS，就可以了。</p>
+<p>这时打开switchyOmega选项，在自动切换模式的切换规则中就可以看到刚刚添加的规则。可以在这里管理自定义的规则。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>这篇文档是站在巨人的肩上写成的。最后，附上巨人们写下的教程，作为大家参考。</p>
+<p>【1】<a href="https://www.textarea.com/ExpectoPatronum/shiyong-shadowsocks-kexue-shangwang-265/" target="_blank" rel="noopener">https://www.textarea.com/ExpectoPatronum/shiyong-shadowsocks-kexue-shangwang-265/</a><br>【2】<a href="http://blog.csdn.net/win_turn/article/details/51559867" target="_blank" rel="noopener">http://blog.csdn.net/win_turn/article/details/51559867</a><br>【3】<a href="http://www.wuyuanhao.com/post/27" target="_blank" rel="noopener">http://www.wuyuanhao.com/post/27</a> 偷偷为师兄打个广告:)</p>
+</div><div class="tags"><a href="/tags/Windows/">Windows</a><a href="/tags/工具/">工具</a><a href="/tags/VPS/">VPS</a></div><div class="post-nav"><a class="pre" href="/2017/09/15/从容的你/">写给从容的你</a><a class="next" href="/2017/09/08/很久以前/">很久以前</a></div><div id="disqus_thread"><div class="btn_click_load"><button class="disqus_click_btn">阅读评论（请确保 Disqus 可以正常加载）</button></div><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://zldodo.github.io/2017/09/11/VPS—-setup/';
+    this.page.identifier = '2017/09/11/VPS—-setup/';
+    this.page.title = '科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega';
+  };</script><script type="text/javascript" id="disqus-lazy-load-script">$.ajax({
+url: 'https://disqus.com/next/config.json',
+timeout: 2500,
+type: 'GET',
+success: function(){
+  var d = document;
+  var s = d.createElement('script');
+  s.src = '//zldodo-1.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', + new Date());
+  (d.head || d.body).appendChild(s);
+  $('.disqus_click_btn').css('display', 'none');
+},
+error: function() {
+  $('.disqus_click_btn').css('display', 'block');
+}
+});</script><script type="text/javascript" id="disqus-click-load">$('.btn_click_load').click(() => {  //click to load comments
+    (() => { // DON'T EDIT BELOW THIS LINE
+        var d = document;
+        var s = d.createElement('script');
+        s.src = '//zldodo-1.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+    $('.disqus_click_btn').css('display','none');
+});</script><script type="text/javascript" id="disqus-count-script">$(function() {
+     var xhr = new XMLHttpRequest();
+     xhr.open('GET', '//disqus.com/next/config.json', true);
+     xhr.timeout = 2500;
+     xhr.onreadystatechange = function () {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+         $('.post-meta .post-comments-count').show();
+         var s = document.createElement('script');
+         s.id = 'dsq-count-scr';
+         s.src = 'https://zldodo-1.disqus.com/count.js';
+         s.async = true;
+         (document.head || document.body).appendChild(s);
+       }
+     };
+     xhr.ontimeout = function () { xhr.abort(); };
+     xhr.send(null);
+   });
+</script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="https://zldodo.github.io"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/喜爱/">喜爱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/探知/">探知</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日记/">日记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/积累/">积累</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/音乐/" style="font-size: 15px;">音乐</a> <a href="/tags/童话/" style="font-size: 15px;">童话</a> <a href="/tags/情绪/" style="font-size: 15px;">情绪</a> <a href="/tags/SLAM/" style="font-size: 15px;">SLAM</a> <a href="/tags/Cartographer/" style="font-size: 15px;">Cartographer</a> <a href="/tags/GPU/" style="font-size: 15px;">GPU</a> <a href="/tags/Deep-Learning/" style="font-size: 15px;">Deep Learning</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/阅读/" style="font-size: 15px;">阅读</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/心情/" style="font-size: 15px;">心情</a> <a href="/tags/梦/" style="font-size: 15px;">梦</a> <a href="/tags/求职/" style="font-size: 15px;">求职</a> <a href="/tags/琐碎/" style="font-size: 15px;">琐碎</a> <a href="/tags/人群/" style="font-size: 15px;">人群</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/VPS/" style="font-size: 15px;">VPS</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/城市/" style="font-size: 15px;">城市</a> <a href="/tags/随想/" style="font-size: 15px;">随想</a> <a href="/tags/情感/" style="font-size: 15px;">情感</a> <a href="/tags/成长/" style="font-size: 15px;">成长</a> <a href="/tags/尝试/" style="font-size: 15px;">尝试</a> <a href="/tags/诗歌/" style="font-size: 15px;">诗歌</a> <a href="/tags/课程/" style="font-size: 15px;">课程</a> <a href="/tags/面试/" style="font-size: 15px;">面试</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/01/01/The-old-man-and-the-sea/">整理·THE OLD MAN ANF THE SEA</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/06/21/我从未见过荒野/">我从未见过荒野</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/蝴蝶夫人/">蝴蝶夫人写给平克尔顿先生</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/07/致读书/">致读书</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/05/一桩奇案/">一桩奇案</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/28/84CharingCrossRoad/">读后·《84，CHARING CROSS ROAD》</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/03/树之生命木之心-地卷/">摘录·树之生命木之心-地卷</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/07/生病杂谈/">生病杂谈</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/01/new-year-2018/">New-Year-2018</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/08/无题/">无题</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//zldodo-1.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Dodo's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.2/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
