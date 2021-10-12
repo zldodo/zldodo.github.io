@@ -1,866 +1,175 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/page/3/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-<meta name="generator" content="Hexo 5.4.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-06-SLAM-Raspi" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/11/09/06-SLAM-Raspi/" class="article-date">
-  <time class="dt-published" datetime="2017-11-09T13:00:52.000Z" itemprop="datePublished">2017-11-09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/11/09/06-SLAM-Raspi/">Have Fun with SLAM-06-Raspberry Pi 3</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>经过前面的积累，我们现在已经利用一台笔记本电脑和TurtleBot，就能够实现实时室内建图了。但是，考虑到实际应用场景，例如无人机来做SLAM，或是其他的移动平台，往往其计算能力是有限，而实时SLAM算法对计算机的性能较高。因此，我们可以在微机系统下录包，然后在笔记本上离线建图。这里，我们选择树莓派作为移动平台的处理器。</p>
-<h2 id="树莓派安装Ubuntu操作系统"><a href="#树莓派安装Ubuntu操作系统" class="headerlink" title="树莓派安装Ubuntu操作系统"></a>树莓派安装Ubuntu操作系统</h2><p>在树莓派上安装与笔记本上版本相同的Ubuntu系统。现在，<a target="_blank" rel="noopener" href="https://ubuntu-mate.org/raspberry-pi/">Ubuntu MATE 16.04 LTS(xenial)</a>已经发布，支持树莓派３和树莓派２．</p>
-<p>刚接触树莓派的朋友，操作系统安装方法可参考<a target="_blank" rel="noopener" href="http://bbs.elecfans.com/jishu_599362_1_1.html">这里</a>。树莓派有HDMI借口，可以连电脑显示器，也可以买一块显示屏，显示屏配置方法可参考<a target="_blank" rel="noopener" href="http://www.waveshare.net/wiki">微雪电子４inch HDMI LCD</a>。</p>
-<h2 id="安装ROS，Cartographer，TurtleBot"><a href="#安装ROS，Cartographer，TurtleBot" class="headerlink" title="安装ROS，Cartographer，TurtleBot"></a>安装ROS，Cartographer，TurtleBot</h2><p>这里的安装过程与前面几节一模一样，那就当做再熟悉一遍安装流程吧：）</p>
-<p>不过，需要注意的是，如果在树莓派安装UBuntu时，选择的是默认安装，没有手动分区，可能会造成在编译Cartographer_turtlebot时非常卡顿。那可不是一般的慢，让人误以为是系统死机了。后来找到了解决办法，原来是是需要扩展swap空间，具体方法请见<a target="_blank" rel="noopener" href="http://blog.csdn.net/wxz3wxz/article/details/70237302">树莓派swap空间扩展</a>。</p>
-<h2 id="配置launch文件"><a href="#配置launch文件" class="headerlink" title="配置launch文件"></a>配置launch文件</h2><p>又要配置launch文件？没错，但操作非常简单，只需要更改<a href="hokuyo_xsens.launch">hokuyo_xsens.launch</a>里的一些配置就好。</p>
-<ul>
-<li><strong>在树莓派上</strong><br>因为不需要在树莓派上运行cartographer算法包，所以删除launch文件里的cartographer_node，cartographer_occupancy_grid_node，rviz就好了。附上我的<a href="raspi_turtlebot_hokuyo_xsens.launch">raspi_turtlebot_hokuyo_xsens.launch</a>。</li>
-<li><strong>在笔记本上</strong><br>笔记本不需要启动各种传感器和移动平台，所有的传感器信息已经存在录制的bag文件里，所以，笔记本只需调用读取bag文件和cartographer算法包即可。录包方法将在后面介绍。</li>
-</ul>
-<p>这里我们使用到了一个cartographer离线建图包cartographer_offline_node，配置如下：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;node name=<span class="string">&quot;cartographer_offline_node&quot;</span> pkg=<span class="string">&quot;cartographer_ros&quot;</span></span><br><span class="line">    type=<span class="string">&quot;cartographer_offline_node&quot;</span> args=<span class="string">&quot;</span></span><br><span class="line"><span class="string">        -configuration_directory</span></span><br><span class="line"><span class="string">            $(find cartographer_turtlebot)/configuration_files</span></span><br><span class="line"><span class="string">        -configuration_basename turtlebot_hokuyo_2d.lua</span></span><br><span class="line"><span class="string">        -bag_filenames /home/dodo/bagfiles/2017-10-25-16-14-11.bag&quot;</span></span><br><span class="line">    output=<span class="string">&quot;screen&quot;</span>&gt;</span><br><span class="line">&lt;/node&gt;</span><br></pre></td></tr></table></figure>
-<p>这里有两点需要注意：</p>
-<ol>
-<li>指定lua文件路径和名称，例如这里的configuration_directory和configuration_basename;</li>
-<li>指定bag文件路径和名称 ,例如这里的bag_filenames /home/dodo/bagfiles/2017-10-25-16-14-11.bag 。<br>附上我的<a href="demo_offline_2d.launch">offline.launch</a></li>
-</ol>
-<h2 id="录包操作"><a href="#录包操作" class="headerlink" title="录包操作"></a>录包操作</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosbag record -a</span><br></pre></td></tr></table></figure>
-<p>详细的使用方法请见<a target="_blank" rel="noopener" href="http://wiki.ros.org/cn/ROS/Tutorials/Recording%20and%20playing%20back%20data">ROS/Recording and play</a>。</p>
-<p>好了，赶紧去试试树莓派吧～</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/11/09/06-SLAM-Raspi/" data-id="ckuncq00k000ksouk1uwncoj5" data-title="Have Fun with SLAM-06-Raspberry Pi 3" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-05-SLAM-IMU" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/11/09/05-SLAM-IMU/" class="article-date">
-  <time class="dt-published" datetime="2017-11-09T12:45:50.000Z" itemprop="datePublished">2017-11-09</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/11/09/05-SLAM-IMU/">Have Fun with SLAM-05-IMU</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在 <a target="_blank" rel="noopener" href="http://ieeexplore.ieee.org/document/7487258/?arnumber=7487258&tag=1">W. Hess2016</a>论文里提到，Cartographer算法可以不使用IMU信息，可以仅依靠激光雷达/视觉相机，估算运动状态和轨迹，实现建图。但如果缺乏IMU，pose精度得不到保证，这将影响到建图精度。因此，为了获得高精度地图，IMU是非常关键的。</p>
-<p>在上一节<a target="_blank" rel="noopener" href="https://zldodo.github.io/2017/11/08/04-SLAM-Configuration/">Have Fun with SLAM-04-Configuration</a>中，我们默认使用了TurtleBot的IMU，并没有自行配置。这一节将重点介绍IMU的配置方法，以XSENS公司的MTw系列IMU为例。</p>
-<h2 id="安装MTw-USB-Serial-Driver"><a href="#安装MTw-USB-Serial-Driver" class="headerlink" title="安装MTw USB Serial Driver"></a>安装MTw USB Serial Driver</h2><p>这一步貌似可以忽略，我在树莓派上省略了这一步，也能正常工作。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="comment">//github.com/xsens/xsens_mt.git</span></span><br><span class="line">cd ~/xsens_mt</span><br><span class="line">make</span><br><span class="line">sudo modprobe usbserial</span><br><span class="line">sudo insmod ./xsens_mt.ko</span><br></pre></td></tr></table></figure>
-<h2 id="下载源文件gps-common，xsens-driver，custom-msgs"><a href="#下载源文件gps-common，xsens-driver，custom-msgs" class="headerlink" title="下载源文件gps_common，xsens_driver，custom_msgs"></a>下载源文件gps_common，xsens_driver，custom_msgs</h2><ul>
-<li>gps_common<br>  安装源：<a target="_blank" rel="noopener" href="https://github.com/swri-robotics/gps_umd%EF%BC%8C%E4%B8%8B%E8%BD%BDgps_common%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%8C%E6%94%BE%E5%88%B0caktin_ws/src/%E7%9B%AE%E5%BD%95%E4%B8%8B%E3%80%82">https://github.com/swri-robotics/gps_umd，下载gps_common文件夹，放到caktin_ws/src/目录下。</a></li>
-<li>custom_msgs<br>  安装源：<a target="_blank" rel="noopener" href="https://github.com/xsens/xsens_mti_ros_node/tree/master/src%EF%BC%8C%E4%B8%8B%E8%BD%BDcustom_msgs%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%8C%E6%94%BE%E5%88%B0caktin_ws/src/%E7%9B%AE%E5%BD%95%E4%B8%8B%E3%80%82">https://github.com/xsens/xsens_mti_ros_node/tree/master/src，下载custom_msgs文件夹，放到caktin_ws/src/目录下。</a></li>
-<li>xsens_driver<br>  安装源：<a target="_blank" rel="noopener" href="https://github.com/ethz-asl/ethzasl_xsens_driver%EF%BC%8C%E5%B0%86%E6%96%87%E4%BB%B6%E5%A4%B9%E5%91%BD%E5%90%8D%E4%B8%BAxsens_driver%EF%BC%8C%E6%94%BE%E5%88%B0caktin_ws/src/%E7%9B%AE%E5%BD%95%E4%B8%8B%E3%80%82">https://github.com/ethz-asl/ethzasl_xsens_driver，将文件夹命名为xsens_driver，放到caktin_ws/src/目录下。</a></li>
-</ul>
-<h2 id="编译gps-common，xsens-driver，custom-msgs"><a href="#编译gps-common，xsens-driver，custom-msgs" class="headerlink" title="编译gps_common，xsens_driver，custom_msgs"></a>编译gps_common，xsens_driver，custom_msgs</h2><p>这里的编译命令需要注意下，如果使用<code>catkin_make_isolated –install –use-ninja</code>,是对/src目录下的所有文件进行编译，貌似会出错。如果报错的话，可以分别对每个Package分别编译：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">catkin_make_isolated --pkg gas_common --install –use-ninja</span><br><span class="line">catkin_make_isolated --pkg xsens_driver --install –use-ninja</span><br><span class="line">catkin_make_isolated --pkg custom_msgs --install –use-ninja</span><br></pre></td></tr></table></figure>
-
-
-<p>到这里，IMU的启动配置就完成了。但如果需要整合到SLAM系统中，还需要像Hokuyo那样配置URDF文件，然后修改launch文件。配置IMU的过程在此就不做赘述了啊，与hokuyo类似。</p>
-<h2 id="配置launch文件"><a href="#配置launch文件" class="headerlink" title="配置launch文件"></a>配置launch文件</h2><p>这里的配置，是在<a target="_blank" rel="noopener" href="https://zldodo.github.io/2017/11/08/04-SLAM-Configuration/">上一节</a>基础上进行增添和修改。</p>
-<ol>
-<li><p>修改模型文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;include file=&quot;$(find turtlebot_bringup)/launch/includes/myrobot.launch.xml&quot;&gt;</span><br></pre></td></tr></table></figure>
-<p>这里的<code>myrobot.launch.xml</code>不同于之前的<code>robot.launch.xml</code>，主要是加入了IMU的urdf模型，并且定义了imu_link。</p>
-</li>
-<li><p>增加xsen_driver node</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- parameters --&gt;</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">arg</span> <span class="attr">name</span>=<span class="string">&quot;device&quot;</span> <span class="attr">default</span>=<span class="string">&quot;auto&quot;</span> <span class="attr">doc</span>=<span class="string">&quot;device file of the IMU&quot;</span>/&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">arg</span> <span class="attr">name</span>=<span class="string">&quot;baudrate&quot;</span> <span class="attr">default</span>=<span class="string">&quot;152000&quot;</span> <span class="attr">doc</span>=<span class="string">&quot;baudrate of the IMU&quot;</span>/&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">arg</span> <span class="attr">name</span>=<span class="string">&quot;timeout&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0.01&quot;</span> <span class="attr">doc</span>=<span class="string">&quot;timeout for the IMU communication&quot;</span>/&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">arg</span> <span class="attr">name</span>=<span class="string">&quot;frame_id&quot;</span> <span class="attr">default</span>=<span class="string">&quot;/imu&quot;</span> <span class="attr">doc</span>=<span class="string">&quot;frame id of the IMU&quot;</span>/&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">arg</span> <span class="attr">name</span>=<span class="string">&quot;frame_local&quot;</span> <span class="attr">default</span>=<span class="string">&quot;ENU&quot;</span> <span class="attr">doc</span>=<span class="string">&quot;desired frame orientation (ENU, NED or NWU)&quot;</span>/&gt;</span></span></span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="name">arg</span> <span class="attr">name</span>=<span class="string">&quot;no_rotation_duration&quot;</span> <span class="attr">default</span>=<span class="string">&quot;0&quot;</span> <span class="attr">doc</span>=<span class="string">&quot;duration (int in seconds) of the no-rotation calibration procedure&quot;</span>/&gt;</span></span></span><br><span class="line"></span><br><span class="line">    &lt;!-- node --&gt;</span><br><span class="line">  <span class="xml"><span class="tag">&lt;<span class="name">node</span> <span class="attr">pkg</span>=<span class="string">&quot;xsens_driver&quot;</span> <span class="attr">type</span>=<span class="string">&quot;mtnode.py&quot;</span> <span class="attr">name</span>=<span class="string">&quot;xsens_driver&quot;</span> <span class="attr">output</span>=<span class="string">&quot;screen&quot;</span> &gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;device&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$(arg device)&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;baudrate&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$(arg baudrate)&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;timeout&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$(arg timeout)&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;frame_id&quot;</span> <span class="attr">value</span>=<span class="string">&quot;imu_link&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;frame_local&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$(arg frame_local)&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;no_rotation_duration&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$(arg no_rotation_duration)&quot;</span>/&gt;</span></span></span><br><span class="line"><span class="xml">  <span class="tag">&lt;/<span class="name">node</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-<p>这部分内容是从<code>xsens_driver/launch</code>下复制过来的，但是需要修改了一下frame_id，改成我们在imu.urdf.xacro里定义的imu_link。</p>
-</li>
-<li><p>修改cartographer_ros的imu_data源</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;node name=<span class="string">&quot;flat_world_imu_node&quot;</span> pkg=<span class="string">&quot;cartographer_turtlebot&quot;</span></span><br><span class="line">    type=<span class="string">&quot;cartographer_flat_world_imu_node&quot;</span> output=<span class="string">&quot;screen&quot;</span>&gt;</span><br><span class="line">  <span class="xml"><span class="tag">&lt;<span class="name">remap</span> <span class="attr">from</span>=<span class="string">&quot;imu_in&quot;</span> <span class="attr">to</span>=<span class="string">&quot;/imu/data&quot;</span> /&gt;</span></span></span><br><span class="line">  <span class="xml"><span class="tag">&lt;<span class="name">remap</span> <span class="attr">from</span>=<span class="string">&quot;imu_out&quot;</span> <span class="attr">to</span>=<span class="string">&quot;/imu&quot;</span> /&gt;</span></span></span><br><span class="line">&lt;/node&gt;</span><br></pre></td></tr></table></figure>
-<p>这里和之前的改动在于，把”/mobile_base/sensors/imu_data_raw”改为”/imu/data” 。</p>
-</li>
-</ol>
-<h2 id="编译cartographer-turtlebot"><a href="#编译cartographer-turtlebot" class="headerlink" title="编译cartographer_turtlebot"></a>编译cartographer_turtlebot</h2><p>在编译之前，需要配置一下catkin_ws/src/cartographer_turtlebot/下的CMakeLists.txt和package.xml。<br>在CMakeLists.txt中的PACKAGE_DEPENDENCIES处，加入xsens_driver，gps_common，custom_msgs，如下。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION <span class="number">2.8</span><span class="number">.12</span>)  # Ships <span class="keyword">with</span> Ubuntu <span class="number">14.04</span> (Trusty)</span><br><span class="line"></span><br><span class="line">project(cartographer_turtlebot)</span><br><span class="line"></span><br><span class="line">set(PACKAGE_DEPENDENCIES</span><br><span class="line">  cartographer_ros</span><br><span class="line">  roscpp</span><br><span class="line">  roslib</span><br><span class="line">  sensor_msgs</span><br><span class="line">  xsens_driver</span><br><span class="line">  gps_common</span><br><span class="line">  custom_msgs</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>在package.xml中的最后加入xsens_driver，gps_common，custom_msgs，如下所示。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;depend&gt;cartographer_ros&lt;/depend&gt;</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>depthimage_to_laserscan<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>kobuki<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>kobuki_core<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>message_runtime<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>openni2_launch<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>roscpp<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>roslib<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>sensor_msgs<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>turtlebot_bringup<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>urg_node<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>xsens_driver<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>gps_common<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">depend</span>&gt;</span>custom_msgs<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>rosunit<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-<p>完成上述配置后，然后编译cartographer_turtlebot。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin_make_isolated --pkg cartographer_turtlebot --install –use-ninja</span><br></pre></td></tr></table></figure>
-
-<p>Notice: XSENS_IMU可以设置多种数据文件格式，这里我们需要使用到的加速度和角速度的原始数据。IMU传感器的输出数据类型设置，可参考XSENS官网上的<a target="_blank" rel="noopener" href="https://www.xsens.com/mt-software-suite/">MT Software Suite</a>使用说明。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/11/09/05-SLAM-IMU/" data-id="ckuncq00j000isouk75fk669n" data-title="Have Fun with SLAM-05-IMU" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-04-SLAM-Configuration" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/11/08/04-SLAM-Configuration/" class="article-date">
-  <time class="dt-published" datetime="2017-11-08T02:54:59.000Z" itemprop="datePublished">2017-11-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/11/08/04-SLAM-Configuration/">Have Fun with SLAM-04-Configuration</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>完成<a target="_blank" rel="noopener" href="https://zldodo.github.io/2017/11/07/03-SLAM-Installation/">系统安装</a>后，接下来是编辑配置文件。这一部分内容非常关键，直接影响着SLAM系统能否顺利工作。可能这一部分需要花一些时间，需要清楚配置文件中每一部分的具体含义和功能。当熟悉完配置文件的格式后，你就可以针对自己搭建的系统进行相关配置了。</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/11/08/04-SLAM-Configuration/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/11/08/04-SLAM-Configuration/" data-id="ckuncq00g000esouk20wfaihq" data-title="Have Fun with SLAM-04-Configuration" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-03-SLAM-Installation" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/11/07/03-SLAM-Installation/" class="article-date">
-  <time class="dt-published" datetime="2017-11-07T13:53:18.000Z" itemprop="datePublished">2017-11-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/11/07/03-SLAM-Installation/">Have Fun with SLAM-03-Installation</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>现在，让我们正式开始SLAM吧！需要准备1台或2台电脑，一个移动平台和SLAM传感器（激光雷达或视觉传感器，如Kinect）。我们采用的传感器是激光雷达，移动平台是Turtlebot2，SLAM算法是 Google公司发布的Cartographer。此外，我们将树莓派作为下位机，搭载在Turtlebot2上，负责记录激光雷达和IMU（Inertial Measurement Unit），odometry等传感器信息，然后发送至上位机（一台笔记本电脑）。r然后在上位机上，运行SLAM算法，实时显示地图结果。</p>
-        
-          <p class="article-more-link">
-            <a href="/2017/11/07/03-SLAM-Installation/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/11/07/03-SLAM-Installation/" data-id="ckuncq00f000dsouk6h2md5ec" data-title="Have Fun with SLAM-03-Installation" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-02-SLAM-Cartograher" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/11/07/02-SLAM-Cartograher/" class="article-date">
-  <time class="dt-published" datetime="2017-11-07T07:11:44.000Z" itemprop="datePublished">2017-11-07</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/11/07/02-SLAM-Cartograher/">Have Fun with SLAM-02-Cartographer</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Cartographer，中文直译为建图者，是Google开源的一个ROS系统支持的2D和3D SLAM库。开发人员可以用这个库实现二维和三维定位及制图功能。其SLAM 算法结合了来自多个传感器（比如，LIDAR、IMU 和 摄像头）的数据，同步计算传感器的位置并绘制传感器周围的环境。开源 Cartographer 还搭配有开源机器人操作系统(ROS)，使得该技术库更易于部署到机器人、无人驾驶、无人机等系统。</p>
-<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>Cartographer 是一个独立的C++函数库。如果想要快速感受SLAM的乐趣，Google也提供了ROS封装好的算法包。</p>
-<ul>
-<li> <strong>Getting start with ROS</strong><br>刚开始接触SLAM时，即使对算法原理非常熟悉，但编写复杂代码仍然是非常费劲的。相比从一砖一瓦建筑大厦，不如通过充分利用现成的算法包，建立SLAM系统，快速实现SLAM功能。这样的学习方式，是站在一个较高的视角上认识SLAM的工作过程。同时，还能收获小小的成就感，从而激励自己更加深入地学习。</li>
-</ul>
-<p>关于Cartographer_ROS的信息，请移步<a target="_blank" rel="noopener" href="https://google-cartographer-ros.readthedocs.io/en/latest/">这里</a>。</p>
-<ul>
-<li><strong>Getting start without ROS</strong><br>知其然，并要知其所以然。对于追求甚解的好奇宝宝们，Cartographer团队也提供了代码解读文档，详见<a target="_blank" rel="noopener" href="https://google-cartographer.readthedocs.io/en/latest/index.html">这里</a>。</li>
-</ul>
-<p>同时，附上他们发表的论文：W. Hess, D. Kohler, H. Rapp, and D. Andor, Real-Time Loop Closure in 2D LIDAR SLAM, in Robotics and Automation (ICRA), 2016 IEEE International Conference on. IEEE, 2016. pp. 1271–1278.</p>
-<h2 id="System-Requirements"><a href="#System-Requirements" class="headerlink" title="System Requirements"></a>System Requirements</h2><p>官网上说，虽然Cartographer能够支持其他类型的系统配置，但保证能在以下系统配置下正常工作：<br>64-bit, modern CPU (e.g. 3rd generation i7)<br>16 GB RAM<br>Ubuntu 14.04 (Trusty) and 16.04 (Xenial)<br>gcc version 4.8.4 and 5.4.0</p>
-<h2 id="Cartographer-ROS-for-TurtleBots"><a href="#Cartographer-ROS-for-TurtleBots" class="headerlink" title="Cartographer ROS for TurtleBots"></a>Cartographer ROS for TurtleBots</h2><p>如果你打算用TurtleBots来玩SLAM， Cartographer团队也提供了 Cartographer SLAM for TurtleBots via Cartographer ROS，详见<a target="_blank" rel="noopener" href="https://google-cartographer-ros-for-turtlebots.readthedocs.io/en/latest/">这里</a>。<br>Cartographer_Turtlebot提供了很多资源，包含kobuki,kinect,hokuyo等，十分方便调用，绝对满足你的玩耍体验。另外，通过熟悉这一套系统框架，也可以为搭建自己的SLAM系统垫脚哦。</p>
-<p>万事俱备啦，还不赶紧去Run the Demo，感受SLAM的乐趣吧～</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/11/07/02-SLAM-Cartograher/" data-id="ckuncq00d0009soukcft7ab86" data-title="Have Fun with SLAM-02-Cartographer" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-01-SLAM-Overview" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/10/10/01-SLAM-Overview/" class="article-date">
-  <time class="dt-published" datetime="2017-10-10T13:14:05.000Z" itemprop="datePublished">2017-10-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/10/10/01-SLAM-Overview/">Have Fun with SLAM-01-Overview</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>认知环境，并能自我定位，是自主式机器人在真实环境中执行任务时非常重要的一项能力。随着无人技术和智能产品不断涌现，SLAM(Simultaneous Localization and Mapping)，即时定位与地图构建，作为其中的一种基础技术，受到了学业界和工业界的高度关注。</p>
-<p>在自身兴趣和课业要求的双从驱动下，我从今年开始学习SLAM的相关知识。在这期间，领略到了SLAM领域的博大精深，数学基础要求比较高，特别是概率学和优化。当还沉浸在漫天的公式无法自拔之时，你会发现，这些理论不过是SLAM海洋的冰山一角。因为实际场景往往有实时性要求，所以，coding 才是更大的挑战，而我还没开始真正踏足这一部分。</p>
-<h2 id="什么是SLAM"><a href="#什么是SLAM" class="headerlink" title="什么是SLAM?"></a>什么是SLAM?</h2><p>SLAM问题可以描述为: 机器人在未知环境中从一个未知位置开始移动，在移动过程中根据位置估计和地图进行自身定位，同时在自身定位的基础上建造增量式地图，实现机器人的自主定位和导航。</p>
-<p>有些费解是不是？相信听过接下来的故事后，你就会对SLAM有一些intuitions了。</p>
-<blockquote>
-<p>从前，有一个机器人叫“小萝卜”。它长着一双乌黑发亮的大眼睛，叫做Kinect（也可以是其他传感器）。有一天，它被邪恶的科学家关进了一间空屋子，里面放满了杂七杂八的东西。小萝卜感到很害怕，因为这个地方他从来没来过，一点儿也不了解。让他感到害怕的主要是三个问题：<br>　　1. 自己在哪里？<br>　　2. 这是什么地方？<br>　　3. 怎么离开这个地方？<br>在SLAM理论中，第一个问题称为定位 (Localization)，第二个称为建图 (Mapping)，第三个则是随后的路径规划。</p>
-</blockquote>
-<p>这个故事出自高翔博士，有兴趣的同学可以去膜拜下他的博客哦~<a target="_blank" rel="noopener" href="http://www.cnblogs.com/gaoxiang12/p/3695962.html">链接</a></p>
-<h2 id="如何进行SLAM？"><a href="#如何进行SLAM？" class="headerlink" title="如何进行SLAM？"></a>如何进行SLAM？</h2><p><strong>首先，“眼睛是心灵的窗户”。</strong>机器人要认识这个大千世界，需要给它配备用来感知环境的传感器，就像人类或其他生物拥有眼睛一样。目前，通常有两类传感器：</p>
-<ul>
-<li>激光雷达，直接获得相对于环境的直接距离信息，从而实现直接相对定位。</li>
-<li>视觉传感器，通过两帧或多帧图像来估计自身的位姿变化，再通过累积位姿变化计算当前位置。</li>
-</ul>
-<p><strong>然后，根据传感器类型，选择匹配的SLAM方案。</strong>主流的SLAM方案如下：</p>
-<ul>
-<li>激光雷达<br>Cartographer,HectorSLAM, Gmapping </li>
-<li>视觉传感器<br>根据计算数据量的大小，可以分为稀疏法(特征点)、半稠密法和稠密法<br>。根据摄像头的数目和特性，又可分为单目，双目，RGBD。常见的视觉SLAM算法有ORB-SLAM，LSD-SLAM，DTAM。关于这部分，有兴趣的同学可以详见<a target="_blank" rel="noopener" href="http://www.slamcn.org/index.php/%E9%A6%96%E9%A1%B5">泡泡机器人wiki</a>。</li>
-</ul>
-<h2 id="SLAM系统框架"><a href="#SLAM系统框架" class="headerlink" title="SLAM系统框架"></a>SLAM系统框架</h2><p>以HectorSLAM为例，其系统框架如下图所示。HectorSLAM 算法需要高更新频率、小测量噪声的激光扫描仪，但导航子系统不是必须的，使空中无人机与地面小车在不平坦区域运行存在运用的可能性。</p>
-<p><img src="01-SLAM-Overview/%E7%B3%BB%E7%BB%9F%E6%A1%86%E5%9B%BE.jpg" alt="SLAM系统框架"></p>
-<h2 id="SLAM算法框架"><a href="#SLAM算法框架" class="headerlink" title="SLAM算法框架"></a>SLAM算法框架</h2><p>SLAM算法的核心分为三个步骤：</p>
-<ol>
-<li>预处理。例如，对激光雷达原始数据所优化，剔除一些有问题的数据，或者进行滤波。</li>
-<li>匹配。也就是说把当前这一个局部环境的点云数据在已经建立地图上寻找到对应的位置。</li>
-<li>地图融合。将这一轮来自激光雷达的新数据拼接到原始地图当中，最终完成地图的更新。</li>
-</ol>
-<p>细化来说，SLAM主要包含以下模块：</p>
-<ul>
-<li>sensor data process</li>
-<li>Visual Odometry，前端优化/定位，针对视觉SLAM</li>
-<li>Backend(Optimization),后端/全局优化,例如GraphSLAM，Cartographer里的SPA</li>
-<li>Mapping, 常见有Matrix and Topologic map两种形式，各有优缺</li>
-<li>Loop cloure detection,回环检测, 进一步减少累计误差</li>
-</ul>
-<p>这篇文章仅仅涉及了SLAM最最最基本的概念，需要学习的还有很多很多。希望有兴趣玩耍SLAM的同学，我们可以一起相互交流学习哟~</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/10/10/01-SLAM-Overview/" data-id="ckuncq00d000asoukdxhp544i" data-title="Have Fun with SLAM-01-Overview" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-从容的你" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/09/15/%E4%BB%8E%E5%AE%B9%E7%9A%84%E4%BD%A0/" class="article-date">
-  <time class="dt-published" datetime="2017-09-15T13:24:31.000Z" itemprop="datePublished">2017-09-15</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%97%A5%E8%AE%B0/">日记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/09/15/%E4%BB%8E%E5%AE%B9%E7%9A%84%E4%BD%A0/">写给从容的你</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>有几天没有写了，因为情绪比较平静，就连自己也有些吃惊。或许因为，生活从来就对我关照有加:)</p>
-<p>那天晚上，情绪失控，嚎啕大哭。12点回到宿舍，睡不着，翻来覆去。大脑里不断闪现最近发生的事情，那些心酸的回忆，于是再也抑制不住心中的苦闷，任由眼泪肆意流淌。凌晨2点，夜真的好静。虽然我已强忍着抽泣，尽量压制，但沉睡中的室友们终究还是发现了，被这突如其来的噪声。<strong>是啊，原本该是宁静的夜晚，为何有人偏偏要扰乱这永恒的生命秩序？</strong></p>
-<p>室友们迷迷糊糊地问我发生了什么，“没事儿，没事儿”，我不知说什么，也许什么也不用说。趴着哭很容易引起鼻塞，于是为了缓解鼻子的难受，我坐了起来。坐在床边的我，看见月光轻轻缓缓，倾泻进来。在这狭小房间里，<strong>明朗的月光萦绕在我身旁，仿佛一位老友，静静不言语</strong>。此时，房间内的另外两人已再次进入梦乡。理解她们，大家也都带着一身疲惫。</p>
-<p>最终，也不知是几点才入睡，大概是精疲力竭的时刻吧。现在想来，理解了有些人为何要通过跑步等方式，来让自己大汗淋漓一场。因为呐，当身体里的力气全都掏空时，原本憋着的、一股想要哭的劲儿也就没了，自然就能沉沉睡去啦。这次，我好像没有做梦，也许有，反正记忆的力气也没了。</p>
-<p>第二天，太阳照常升起，我一如往常地起床洗漱。出门前，特意穿了一件印有“是苯宝宝多氯了”字样的T恤，当作对自己的积极暗示吧。是呀，是你多虑了，生活本就不是你想象的美好乐园。<strong>那真正的勇士，看到了生活的本质，但仍旧热爱它</strong>。我知道，你仍旧爱着，爱它所有，阳光，雨露，草地，清香。8点半的实验室，你仍旧是第一个唤醒它的人。打开电脑，<strong>昨日已是往昔，今日已然到来</strong>，去做你该做的吧。</p>
-<p>听了毛不易的《借》后，我饶有感触地写下了：</p>
-<p><strong>借一双明眸  穿越层层迷雾  凝望海上</strong><br><strong>借一颗星辰  指引惶惶迷途  亲吻远方</strong><br><strong>人如烟尘  漂浮立身</strong><br><strong>借她步履从容  平淡一生</strong></p>
-<p>现在，我像是真的借到了某种神力，来自于我热爱的生活。看看，我是不是从容多了呢:)</p>
-<p>骗人，你的脸上怎么冒出了那样多大痘？</p>
-<p>我……[捂脸]</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/09/15/%E4%BB%8E%E5%AE%B9%E7%9A%84%E4%BD%A0/" data-id="ckuncq01c002ksoukfiax7f2k" data-title="写给从容的你" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9A%8F%E6%83%B3/" rel="tag">随想</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-VPS—-setup" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/09/11/VPS%E2%80%94-setup/" class="article-date">
-  <time class="dt-published" datetime="2017-09-11T07:07:07.000Z" itemprop="datePublished">2017-09-11</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/09/11/VPS%E2%80%94-setup/">科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>时代发展至今，自然环境已阻挡不了人们去寻觅世界的每一个角落。上山下海，无所不行。即便如此，却总有痴妄的人试图建立起一座隐形的高墙，去阻隔所谓的“外来腐化思想”。然而，思想的自由流通，理应不该受到这样的百般阻扰。于是，VPS为那些追求“独立之精神，自由之思想”理念的人开辟了一条绿色通道。</p>
-<p>主流的VPS（虚拟主机）服务器提供商有三家：</p>
-<ul>
-<li>linode</li>
-<li>digital ocean</li>
-<li>bandwagon<br>针对个人用户，bandwagon是个不错选择，并且支持支付宝付款。</li>
-</ul>
-<h2 id="购买VPS服务"><a href="#购买VPS服务" class="headerlink" title="购买VPS服务"></a>购买VPS服务</h2><p><a target="_blank" rel="noopener" href="https://www.bwh1.net/">购买链接</a><br><a target="_blank" rel="noopener" href="http://www.laozuo.org/bandwagonhost">选型参考</a><br>付款成功后，查看你所购买的VPS服务端的详细信息，点击<code>KiwiVM Control Panel</code><br>将会看到VPS登录用的IP和port信息。</p>
-<p>然后，点击左侧的<code>Install new OS</code>,选择在Main controls中列出的Operating System 信号，例如 Centos 6 x86 bbr，即可获得root_password和port信息。</p>
-<p>以上操作获得的IP，port和root_password将会在后面使用到。</p>
-<h2 id="配置服务端"><a href="#配置服务端" class="headerlink" title="配置服务端"></a>配置服务端</h2><p>下面，我们将远程登录到海外服务器，基于上面已经获取的IP，port和root_password的信息。</p>
-<p>Window用户SSH登录需要<a target="_blank" rel="noopener" href="http://www.netsarang.com/download/down_form.html?code=522&utm_source=textarea.com&utm_medium=textarea.com&utm_campaign=article">Xshell</a></p>
-<h3 id="Xshell-登录-VPS"><a href="#Xshell-登录-VPS" class="headerlink" title="Xshell 登录 VPS"></a>Xshell 登录 VPS</h3><p>选择免费的Home&amp;School user，下载，安装。然后按照Xshell使用的<a target="_blank" rel="noopener" href="https://www.netsarang.com/tutorial/xshell/2776/Getting_Started?status=1&page=1&s_type=&s_text=">官方教程</a>配置好IP和port。设置用户默认为root,注意这里要的password即是上面获得root_password。</p>
-<p>登录成功后，命令行中将显示<code>[root@host ~]#</code>.</p>
-<p>根据你购买的服务器端的操作系统，选择安装shadowsocks，可<a target="_blank" rel="noopener" href="https://www.textarea.com/ExpectoPatronum/shiyong-shadowsocks-kexue-shangwang-265/">参考链接</a>。<br>我的是CentOS, 所以安装命令是这样的</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install python-setuptools &amp;&amp; easy_install pip</span><br><span class="line">pip install shadowsocks</span><br></pre></td></tr></table></figure>
-
-<p>如果<code>easy_install pip</code>找不到安装包，则使用以下办法：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py</span><br></pre></td></tr></table></figure>
-
-<h3 id="编写配置文件"><a href="#编写配置文件" class="headerlink" title="编写配置文件"></a>编写配置文件</h3><p>下面配置shadowsocks启动参数文件。</p>
-<p>shadowsocks启动时的参数，如服务器端口，代理端口，登录密码等，可以通过启动时的命令行参数来设定，也可以通过json格式的配置文件设定。推荐使用配置文件，方便查看和修改。</p>
-<p>用vi新建一个配置文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/shadowsocks.json</span><br></pre></td></tr></table></figure>
-<p>然后输入如下内容</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">   &quot;server&quot;:&quot;my_server_ip&quot;, </span><br><span class="line">   &quot;server_port&quot;:&quot;server_port&quot;, </span><br><span class="line">   &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">   &quot;local_port&quot;:1080, </span><br><span class="line">   &quot;password&quot;:&quot;mypassword&quot;,</span><br><span class="line">   &quot;timeout&quot;:300, </span><br><span class="line">   &quot;method&quot;:&quot;aes-256-cfb&quot;, </span><br><span class="line">   &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>要是为了多个用户端使用，那就按下面的格式设置</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123; </span><br><span class="line">   &quot;server&quot;:&quot;my_server_ip&quot;, </span><br><span class="line">   &quot;port_password&quot;:&#123;</span><br><span class="line">   &quot;server_port1&quot;:&quot;password1&quot;,</span><br><span class="line">   &quot;server_port2&quot;:&quot;password2&quot;,</span><br><span class="line">   &quot;server_port2&quot;:&quot;password2&quot;</span><br><span class="line">   &#125;</span><br><span class="line">   &quot;local_address&quot;: &quot;127.0.0.1&quot;, </span><br><span class="line">   &quot;local_port&quot;:1080, </span><br><span class="line">   &quot;timeout&quot;:300, </span><br><span class="line">   &quot;method&quot;:&quot;aes-256-cfb&quot;, </span><br><span class="line">   &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="启动shadowsocks"><a href="#启动shadowsocks" class="headerlink" title="启动shadowsocks"></a>启动shadowsocks</h3><p>如果已经写好了配置文件，启动shadowsocks服务器的命令如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d start</span><br><span class="line">ssserver -c /etc/shadowsocks.json -d stop</span><br></pre></td></tr></table></figure>
-<p>另外，要是后面又修改了配置文件，重新启动shadowsocks的命令是</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d restart</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置客户端"><a href="#配置客户端" class="headerlink" title="配置客户端"></a>配置客户端</h2><p>首先，需要下载客户端。Windows用户请移步<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows/releases?utm_source=textarea.com&utm_medium=textarea.com&utm_campaign=article">这里下载</a>，其他用户请参考<a target="_blank" rel="noopener" href="https://github.com/shadowsocks">Github资源</a>。</p>
-<p>解压，然后运行.exe文件，在工具栏里出现“小飞机”图标，右击选择<em>服务器</em>-&gt;<em>编辑服务器</em>，出现一个窗口，填入已在服务端设置好的信息，my_server_ip，server_port，password。</p>
-<p>然后右击“小飞机”图标，点击<em>启动系统代理</em>，就可以畅通无阻地愉快上网啦~</p>
-<h2 id="配置自动切换代理"><a href="#配置自动切换代理" class="headerlink" title="配置自动切换代理"></a>配置自动切换代理</h2><p>** 为什么要配置自动切换代理？**</p>
-<blockquote>
-<p>Windows和macOS客户端支持全局代理和PAC代理两种方式，后者会使用一个脚本来自动检查一个网站是否在需要代理的网站列表中，自动选择直接连接或代理连接。</p>
-</blockquote>
-<p>PAC列表可以在线更新，但是难免有收录不全的情况。如果你用Chrome,可以使用支持自定义规则的代理管理插件来实现自动切换代理，比如switchyOmega。</p>
-<p>在Chrome应用商店里安装switchyOmega，然后进入switchyOmega的配置界面。</p>
-<h3 id="创建情景模式"><a href="#创建情景模式" class="headerlink" title="创建情景模式"></a>创建情景模式</h3><p>新建一个情景模式，比如叫SS，代理协议选择socks5，代理地址为127.0.0.1，端口1080。</p>
-<h3 id="设置自动切换模式"><a href="#设置自动切换模式" class="headerlink" title="设置自动切换模式"></a>设置自动切换模式</h3><p>在设置界面选择自动切换模式，在“切换规则”中勾选“规则列表规则”，对应的情景模式选择刚刚新建的SS。</p>
-<p>然后在下面的规则列表地址中填写 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt</span><br></pre></td></tr></table></figure>
-<p>规则列表格式选择AutoProxy。这是一个一直在维护的被墙网站列表，项目地址是<a target="_blank" rel="noopener" href="https://github.com/gfwlist/gfwlist%E3%80%82">https://github.com/gfwlist/gfwlist。</a></p>
-<p>然后点击立即更新情景模式， 更新完成后会有提示。</p>
-<p>点击左侧的“应用选项”。然后单击switchyOmega图标，选择自动切换，就可以在访问“不存在的网站”时自动切换到shadowsocks代理了。</p>
-<h3 id="添加自定义规则"><a href="#添加自定义规则" class="headerlink" title="添加自定义规则"></a>添加自定义规则</h3><p>如果遇到某个国外网站无法直接连接或速度太慢时，可以单击switchyOmega图标，选择“添加条件”，情景模式选择SS，就可以了。</p>
-<p>这时打开switchyOmega选项，在自动切换模式的切换规则中就可以看到刚刚添加的规则。可以在这里管理自定义的规则。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>这篇文档是站在巨人的肩上写成的。最后，附上巨人们写下的教程，作为大家参考。</p>
-<p>【1】<a target="_blank" rel="noopener" href="https://www.textarea.com/ExpectoPatronum/shiyong-shadowsocks-kexue-shangwang-265/">https://www.textarea.com/ExpectoPatronum/shiyong-shadowsocks-kexue-shangwang-265/</a><br>【2】<a target="_blank" rel="noopener" href="http://blog.csdn.net/win_turn/article/details/51559867">http://blog.csdn.net/win_turn/article/details/51559867</a><br>【3】<a target="_blank" rel="noopener" href="http://www.wuyuanhao.com/post/27">http://www.wuyuanhao.com/post/27</a> 偷偷为师兄打个广告:)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/09/11/VPS%E2%80%94-setup/" data-id="ckuncq00z001psoukezgbb4hs" data-title="科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPS/" rel="tag">VPS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-很久以前" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/09/08/%E5%BE%88%E4%B9%85%E4%BB%A5%E5%89%8D/" class="article-date">
-  <time class="dt-published" datetime="2017-09-08T14:40:48.000Z" itemprop="datePublished">2017-09-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%97%A5%E8%AE%B0/">日记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/09/08/%E5%BE%88%E4%B9%85%E4%BB%A5%E5%89%8D/">很久以前</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>I miss the air   I miss my friends<br>I miss my mom    I miss it when<br>—— * Millon Years Ago - Adele *</p>
-</blockquote>
-<p>最近总是想起本科时看过的一本书，《麦田里的守望者》。这里的生活，真的很难说让人感到开心。可能最让我高兴的时刻，是学习新鲜知识的时候吧，比如online courses, blogs；而与人有关的，零星点点，少得可怜。</p>
-<p>回想这两年，脑袋里全是早上开门后的第一眼，空荡荡的实验室。白天的时候，每张座椅上都坐着一个聪明的灵魂，他们的脑回路高速运转着。身旁的书本们，似乎也感受到了这份忙碌，不敢打破宁静，缄默不言语。一切也不尽是静悄悄，微信群里的讨论，时常热烈，每次我都得一层层地爬楼。大家的沟通交流，多半是在来往食堂的路上和吃饭的时候。可这短短的吃饭时间，除了日常吐槽，还有哪些有趣话题大家可以聊呢；加上周围嘈杂，谁又能听清谁心底的弱小声音呢。</p>
-<p>不过呀，感动的时刻也会时常发生，朋友们的包容和帮助，我都铭记于心。所以呢，小小的人呐，切勿对他人索求太多。别人拒绝你，总是有他的理由，不要因此就心生委屈。看淡些，这很正常，毕竟，没有人应该对你负责。</p>
-<p>这几天飞叔请假了，不在学校，听说是因为失眠得厉害。他的妈妈也来北京了，不晓得是不是因为他状态不好的缘故。我也好想念家呀，母亲的饭菜，舒适的床垫，不用早起的生活。唉呀，快醒醒，还有好多事等着你呢。校招，面试，课题，导师，渡渡要加油哦~</p>
-<h2 id="今日学习小结"><a href="#今日学习小结" class="headerlink" title="今日学习小结"></a>今日学习小结</h2><p>今天在Kaggle上下载了Dogs-vs-Cats比赛的数据集，用教程代码运行了一下，嘿嘿，第一次使用GPU，小小的成就感。但由于AWS的服务器在海外，国内访问速度很慢很慢，让我捉急呀，后面还是买个VPS服务吧，这样才能流畅地写代码。这几天，基本熟悉了Linux环境下的常用命令，挺好玩的，继续学习哟~</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/09/08/%E5%BE%88%E4%B9%85%E4%BB%A5%E5%89%8D/" data-id="ckuncq01h002usouk0xt58b8i" data-title="很久以前" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9A%8F%E6%83%B3/" rel="tag">随想</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9F%B3%E4%B9%90/" rel="tag">音乐</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-AWS-setup" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2017/09/05/AWS-setup/" class="article-date">
-  <time class="dt-published" datetime="2017-09-05T08:10:02.000Z" itemprop="datePublished">2017-09-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2017/09/05/AWS-setup/">搭建AWS云计算配置环境</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>实操是快速有效掌握一门知识的最好途径。随着AI崛起，许多科技热点不断涌现，机器学习当属个中翘楚。想要愉快玩耍机器学习，自然离不开GPU的支持。但对于新手入门，想要自己搭建GPU服务器，工程量显得有些大；再加上囊中羞涩，个人购买GPU实在有些困难。在这种情况下，云计算服务是一个不错的选择。</p>
-<h1 id="什么是云计算？"><a href="#什么是云计算？" class="headerlink" title="什么是云计算？"></a>什么是云计算？</h1><p>简单说来，云计算就是通过 Internet（“云”）交付服务器、存储空间、数据库、网络、软件和分析等计算服务。提供这些计算服务的公司称为云提供商，他们通常基于用户使用对云计算服务进行收费，类似于家用水电的计费方式。</p>
-<h1 id="云计算服务提供商"><a href="#云计算服务提供商" class="headerlink" title="云计算服务提供商"></a>云计算服务提供商</h1><ul>
-<li><p>AWS<br>亚马逊出品，市场老大，商业云计算名义上的先驱，主要针对企业级用户，特别是在国内没有开放个人账户。</p>
-</li>
-<li><p>Azure<br>微软出品，与自家产品无线缝合，一条龙服务，正在追赶AWS。</p>
-</li>
-<li><p> APP engine<br>谷歌出品，大名鼎鼎Mapduce框架的提出者，在分布式计算和分布式存储方面掌握核心科技。</p>
-</li>
-<li><p>OVH<br>一家法国公司，价格比较低，性价比高。</p>
-</li>
-<li><p>阿里云<br>阿里巴巴出品，在全球来看算是第二梯队的厂商，拥有本土优势。</p>
-</li>
-</ul>
-<h1 id="AWS环境搭建"><a href="#AWS环境搭建" class="headerlink" title="AWS环境搭建"></a>AWS环境搭建</h1><p>最近正在学习一门MOOC课程，叫<a target="_blank" rel="noopener" href="http://course.fast.ai/index.html">Practical Deep Learning for Coders</a>, 由 JEREMY HOWARD （President Kaggle ）讲授，AWS是这门课推荐，所以我也就一个一个轮子地搭建AWS GPU server。</p>
-<p>首先，推荐观看这个<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=8rjRfW4JM2I">新手指南视频</a>,配套有<a target="_blank" rel="noopener" href="http://wiki.fast.ai/index.php/AWS_install">wiki page</a>,里面有常见问题的解决办法。如果有些问题wiki页面里没有涉及，你可以在这个<a target="_blank" rel="noopener" href="http://forums.fast.ai/">论坛</a>查找和询问。最终，你一定能得到解决办法的。</p>
-<p>AWS GPU server的搭建过程我不祥述，上面的新手指南和wiki已经说明得十分详细，下面主要罗列出我在搭建环境中遇到问题及解决方法，方便大家使用。</p>
-<h2 id="Errors-bash-setup-p2-sh-or-setup-t2-sh"><a href="#Errors-bash-setup-p2-sh-or-setup-t2-sh" class="headerlink" title="Errors: bash setup_p2.sh or setup_t2.sh"></a>Errors: bash setup_p2.sh or setup_t2.sh</h2><p>我在这儿卡壳了很久，遇到了许多奇奇怪怪的错误。而且，我也发现这部分是论坛里面大家问的最多的地方。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setup_t2.sh: line 7: syntax error near unexpected token `newline&#x27;</span><br><span class="line">setup_t2.sh: line 7: `&lt;!DOCTYPE html&gt;&#x27;</span><br></pre></td></tr></table></figure>
-<p>setup_t2.sh 格式问题，不应是HTML格式 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;\r&#x27;: command not found</span><br></pre></td></tr></table></figure>
-<p>setup_t2.sh 格式问题，用notepad++z转换成UNIX格式</p>
-<p>后面发现，这两个问题同属同一个原因：当使用<code>wget url</code>时，复制的地址下载的是html 格式文件，而不是我们需要的.sh或者.py格式。解决办法是在github里clone所需文件，然后复制到cygwin下面的目录。另外，我还发现了一个办法，从论坛<a target="_blank" rel="noopener" href="http://forums.fast.ai/t/unreadable-notebook-home-ubuntu-nbs-lesson1-ipynb-notjsonerror-notebook-does-not-appear-to-be-json/2966/4">这里</a>搬运来的。具体是在github中选择文件的 view-raw模式，然后复制地址，就可以使用<code>wget</code>的方式下载文件了。</p>
-<h2 id="Error-：ssh-command-not-found"><a href="#Error-：ssh-command-not-found" class="headerlink" title="Error ：ssh command not found"></a>Error ：ssh command not found</h2><p>需要安装一下openssh</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-cyg install openssh</span><br></pre></td></tr></table></figure>
-
-<h2 id="Start-Over-with-AWS步骤"><a href="#Start-Over-with-AWS步骤" class="headerlink" title="Start Over with AWS步骤"></a>Start Over with AWS步骤</h2><p>若遇到实在无法解决的错误，可以考虑重新安装一次，参考<a target="_blank" rel="noopener" href="http://wiki.fast.ai/index.php/Starting_Over_with_AWS">Start Over with AWS</a><br>** 切记**！！！要删除.pem,通过<code>rm ~/.ssh/aws-key-fast-ai.pem</code>。</p>
-<h2 id="Error-occurred-AddressLimitExceeded"><a href="#Error-occurred-AddressLimitExceeded" class="headerlink" title="Error occurred (AddressLimitExceeded)"></a>Error occurred (AddressLimitExceeded)</h2><p>这是因为Elastic IP或者VPCs超过指定数量，我测试了下，似乎不允许炒过5个。<br>release Elastic IP和delete your VPCs 的步骤见<a target="_blank" rel="noopener" href="http://wiki.fast.ai/index.php/Starting_Over_with_AWS">Start Over with AWS</a>。</p>
-<p>** Tips:每次bash前，需关闭所有Instance **</p>
-<h2 id="启动AWS"><a href="#启动AWS" class="headerlink" title="启动AWS"></a>启动AWS</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">source aws-alias.sh</span><br><span class="line">alias</span><br><span class="line">aws-get-p2</span><br><span class="line">aws-start</span><br><span class="line">aws-ssh</span><br></pre></td></tr></table></figure>
-<p>可将<code>source aws-alias.sh</code>写入<code>vim .bashrc</code>。<br>若出现<code>vim command not found</code>，这是因为缺少vim安装包。重新启动cygwin的setup.exe，默认安装，直到选择packages。选择 vim安装包，下一步安装。</p>
-<h2 id="vim-使用"><a href="#vim-使用" class="headerlink" title="vim 使用"></a>vim 使用</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">i 插入模式</span><br><span class="line">esc 命令模式</span><br><span class="line">:q 退出</span><br><span class="line">:wq 保存退出</span><br></pre></td></tr></table></figure>
-
-<p>** 走到这一步，AWS配置就基本完成啦**</p>
-<h1 id="好用的终端小工具"><a href="#好用的终端小工具" class="headerlink" title="好用的终端小工具"></a>好用的终端小工具</h1><p>tmux是linux中一种管理窗口的程序, 它提供了一个Session随时存储和恢复的功能, detach Session(保持Session后台运行)然后重新attach Session。</p>
-<blockquote>
-<p>常用场景, 在公司Terimal中开了多个标签和文件, 下班回家忽然有了灵感想要继续编写, 使用ssh远程链接公司电脑, 然后发现标签页和文件都要重新打开, 如果使用Tmux, 下班了detach当前Session, 回家ssh远程连接后, attach Session后, 场景恢复又能愉快的继续编程了…</p>
-</blockquote>
-<h2 id="tmux使用"><a href="#tmux使用" class="headerlink" title="tmux使用"></a>tmux使用</h2><p>前缀键<code>Crtl+b</code><br>按过前缀键后，然后按一下c =创建新窗口<br>按过前缀键后，然后按一下% =水平分割<br>按过前缀键后，然后按一下” =垂直分割</p>
-<p>基于前缀键，还有常用的其他命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">o swap panes</span><br><span class="line">q show pane numbers</span><br><span class="line">x kill pane</span><br></pre></td></tr></table></figure>
-<p>** 如有任何AWS配置安装问题，欢迎在评论中交流哈~**</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2017/09/05/AWS-setup/" data-id="ckuncq00o000vsoukefpm0d70" data-title="搭建AWS云计算配置环境" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-  <nav id="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
-  </nav>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%96%9C%E7%88%B1/">喜爱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E8%AE%B0/">日记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%A7%AF%E7%B4%AF/">积累</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/" rel="tag">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%BA%E7%BE%A4/" rel="tag">人群</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%8E%E5%B8%82/" rel="tag">城市</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B0%9D%E8%AF%95/" rel="tag">尝试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BF%83%E6%83%85/" rel="tag">心情</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%83%85%E6%84%9F/" rel="tag">情感</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%83%85%E7%BB%AA/" rel="tag">情绪</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E8%A1%8C/" rel="tag">旅行</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A2%A6/" rel="tag">梦</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%82%E8%81%8C/" rel="tag">求职</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%90%90%E7%A2%8E/" rel="tag">琐碎</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%99%BB%E9%AB%98/" rel="tag">登高</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%A5%E8%AF%9D/" rel="tag">童话</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%97%E6%AD%8C/" rel="tag">诗歌</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%83%B3/" rel="tag">随想</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9F%B3%E4%B9%90/" rel="tag">音乐</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Cartographer/" style="font-size: 17.5px;">Cartographer</a> <a href="/tags/Deep-Learning/" style="font-size: 10px;">Deep Learning</a> <a href="/tags/GPU/" style="font-size: 11.25px;">GPU</a> <a href="/tags/SLAM/" style="font-size: 17.5px;">SLAM</a> <a href="/tags/VPS/" style="font-size: 10px;">VPS</a> <a href="/tags/Windows/" style="font-size: 11.25px;">Windows</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/%E4%BA%BA%E7%BE%A4/" style="font-size: 16.25px;">人群</a> <a href="/tags/%E5%9F%8E%E5%B8%82/" style="font-size: 10px;">城市</a> <a href="/tags/%E5%B0%9D%E8%AF%95/" style="font-size: 11.25px;">尝试</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a> <a href="/tags/%E5%BF%83%E6%83%85/" style="font-size: 20px;">心情</a> <a href="/tags/%E6%83%85%E6%84%9F/" style="font-size: 11.25px;">情感</a> <a href="/tags/%E6%83%85%E7%BB%AA/" style="font-size: 10px;">情绪</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 11.25px;">成长</a> <a href="/tags/%E6%97%85%E8%A1%8C/" style="font-size: 11.25px;">旅行</a> <a href="/tags/%E6%A2%A6/" style="font-size: 10px;">梦</a> <a href="/tags/%E6%B1%82%E8%81%8C/" style="font-size: 12.5px;">求职</a> <a href="/tags/%E7%90%90%E7%A2%8E/" style="font-size: 13.75px;">琐碎</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 18.75px;">生活</a> <a href="/tags/%E7%99%BB%E9%AB%98/" style="font-size: 10px;">登高</a> <a href="/tags/%E7%AB%A5%E8%AF%9D/" style="font-size: 10px;">童话</a> <a href="/tags/%E8%AF%97%E6%AD%8C/" style="font-size: 11.25px;">诗歌</a> <a href="/tags/%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">课程</a> <a href="/tags/%E9%98%85%E8%AF%BB/" style="font-size: 15px;">阅读</a> <a href="/tags/%E9%9A%8F%E6%83%B3/" style="font-size: 15px;">随想</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 10px;">面试</a> <a href="/tags/%E9%9F%B3%E4%B9%90/" style="font-size: 11.25px;">音乐</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2021/10/12/The-old-man-and-the-sea/">整理·THE OLD MAN ANF THE SEA</a>
-          </li>
-        
-          <li>
-            <a href="/2020/08/14/Travel-in-Heidelberg/">一个人走在海德堡</a>
-          </li>
-        
-          <li>
-            <a href="/2019/01/06/%E5%91%BC%E5%95%B8%E5%B1%B1%E5%BA%84/">呼啸凛冽的爱</a>
-          </li>
-        
-          <li>
-            <a href="/2019/01/05/AWS%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E5%85%8D%E8%B4%B9%E7%9A%84%E5%8D%88%E9%A4%90/">吓坏了！AWS免费套餐差点变成收费黑洞！</a>
-          </li>
-        
-          <li>
-            <a href="/2019/01/05/%E6%B3%AF%E7%84%B6%E4%BC%97%E4%BA%BA%E7%9F%A3/">泯然众人矣</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2021 John Doe<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+<!DOCTYPE html><html class="appearance-auto" lang="en"><head><meta charset="UTF-8"><title>Haojen's blog</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/favicon.png"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/widget-post-list.css"><meta name="generator" content="Hexo 5.4.0"></head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">Haojen's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">Home</a></h3><h3 class="is-inline-block"><a href="/about">About</a></h3><h3 class="is-inline-block"><a href="/archives">Archives</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">Home</a></h3><h3 class="is-inline-block"><a href="/about">About</a></h3><h3 class="is-inline-block"><a href="/archives">Archives</a></h3></header><main><article class="post-container is-flex is-justify-content-center section container is-max-widescreen pt-4 px-2"><div class="columns is-variable is-1-tablet is-3-desktop-only is-2-widescreen is-full-width"><section class="column"><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/SLAM"><i class="tag post-item-tag">SLAM</i></a><a href="/tags/Cartographer"><i class="tag post-item-tag">Cartographer</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/11/09/06-SLAM-Raspi/">Have Fun with SLAM-06-Raspberry Pi 3</a></h2><time class="has-text-grey" datetime="2017-11-09T13:00:52.000Z">2017-11-09</time><p class="is-flex-grow-2 mt-2">经过前面的积累，我们现在已经利用一台笔记本电脑和TurtleBot，就能够实现实时室内建图了。但是，考虑到实际应用场景，例如无人机来做SLAM，或是其他的移动平台，往往其计算能力是有限，而实时SLAM算法对计算机的性能较高。因此，我们可以在微机系统下录包，然后在笔记本上离线建图。这里，我们选择树莓派作为移动平台的处理器。
+树莓派安装Ubuntu操作系统在树莓派上安装与笔记本上版本相同的Ubuntu系统。现在，Ubuntu MATE 16.04 LTS(xenial)已经发布，支持树莓派３和树莓派２．
+刚接触树莓派的朋友，操作系统安装方法可参考这里。树莓派有HDMI借口，可以连电脑显示器，也可以买一块显示屏，显示屏配置方法可参考微雪电子４inch HDMI LCD。
+安装ROS，Cartographer，Tu..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/11/09/06-SLAM-Raspi/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/SLAM"><i class="tag post-item-tag">SLAM</i></a><a href="/tags/Cartographer"><i class="tag post-item-tag">Cartographer</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/11/09/05-SLAM-IMU/">Have Fun with SLAM-05-IMU</a></h2><time class="has-text-grey" datetime="2017-11-09T12:45:50.000Z">2017-11-09</time><p class="is-flex-grow-2 mt-2">在 W. Hess2016论文里提到，Cartographer算法可以不使用IMU信息，可以仅依靠激光雷达/视觉相机，估算运动状态和轨迹，实现建图。但如果缺乏IMU，pose精度得不到保证，这将影响到建图精度。因此，为了获得高精度地图，IMU是非常关键的。
+在上一节Have Fun with SLAM-04-Configuration中，我们默认使用了TurtleBot的IMU，并没有自行配置。这一节将重点介绍IMU的配置方法，以XSENS公司的MTw系列IMU为例。
+安装MTw USB Serial Driver这一步貌似可以忽略，我在树莓派上省略了这一步，也能正常工作。
+12345git clone https://github.com/xsens/xsens_mt.gitcd ~/xsens_mtma..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/11/09/05-SLAM-IMU/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/SLAM"><i class="tag post-item-tag">SLAM</i></a><a href="/tags/Cartographer"><i class="tag post-item-tag">Cartographer</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/11/08/04-SLAM-Configuration/">Have Fun with SLAM-04-Configuration</a></h2><time class="has-text-grey" datetime="2017-11-08T02:54:59.000Z">2017-11-08</time><p class="is-flex-grow-2 mt-2">完成系统安装后，接下来是编辑配置文件。这一部分内容非常关键，直接影响着SLAM系统能否顺利工作。可能这一部分需要花一些时间，需要清楚配置文件中每一部分的具体含义和功能。当熟悉完配置文件的格式后，你就可以针对自己搭建的系统进行相关配置了。</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/11/08/04-SLAM-Configuration/">Read more</a></section></article><article class="post-item-card"><header class="is-relative is-flex"><div class="post-cover-backdrop is-hidden"><img src="03-SLAM-Installation/%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90.png" alt="loading.."></div><a class="post-cover-link has-text-centered skeleton" href="/2017/11/07/03-SLAM-Installation/"><img class="post-cover-img js-img-fadeIn" src="03-SLAM-Installation/%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90.png" alt="loading.." data-backdrop="true"></a></header><section class="content post-card-content p-4 pb-5"><header><a href="/tags/SLAM"><i class="tag post-item-tag">SLAM</i></a><a href="/tags/Cartographer"><i class="tag post-item-tag">Cartographer</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/11/07/03-SLAM-Installation/">Have Fun with SLAM-03-Installation</a></h2><time class="has-text-grey" datetime="2017-11-07T13:53:18.000Z">2017-11-07</time><p class="is-flex-grow-2 mt-2">现在，让我们正式开始SLAM吧！需要准备1台或2台电脑，一个移动平台和SLAM传感器（激光雷达或视觉传感器，如Kinect）。我们采用的传感器是激光雷达，移动平台是Turtlebot2，SLAM算法是 Google公司发布的Cartographer。此外，我们将树莓派作为下位机，搭载在Turtlebot2上，负责记录激光雷达和IMU（Inertial Measurement Unit），odometry等传感器信息，然后发送至上位机（一台笔记本电脑）。r然后在上位机上，运行SLAM算法，实时显示地图结果。</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/11/07/03-SLAM-Installation/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/SLAM"><i class="tag post-item-tag">SLAM</i></a><a href="/tags/Cartographer"><i class="tag post-item-tag">Cartographer</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/11/07/02-SLAM-Cartograher/">Have Fun with SLAM-02-Cartographer</a></h2><time class="has-text-grey" datetime="2017-11-07T07:11:44.000Z">2017-11-07</time><p class="is-flex-grow-2 mt-2">Cartographer，中文直译为建图者，是Google开源的一个ROS系统支持的2D和3D SLAM库。开发人员可以用这个库实现二维和三维定位及制图功能。其SLAM 算法结合了来自多个传感器（比如，LIDAR、IMU 和 摄像头）的数据，同步计算传感器的位置并绘制传感器周围的环境。开源 Cartographer 还搭配有开源机器人操作系统(ROS)，使得该技术库更易于部署到机器人、无人驾驶、无人机等系统。
+Getting StartedCartographer 是一个独立的C++函数库。如果想要快速感受SLAM的乐趣，Google也提供了ROS封装好的算法包。
+
+ Getting start with ROS刚开始接触SLAM时，即使对算法原理非常熟悉，但编写复杂代码仍然是非常费劲的。相比从一砖一瓦建筑..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/11/07/02-SLAM-Cartograher/">Read more</a></section></article><article class="post-item-card"><header class="is-relative is-flex"><div class="post-cover-backdrop is-hidden"><img src="01-SLAM-Overview/%E7%B3%BB%E7%BB%9F%E6%A1%86%E5%9B%BE.jpg" alt="loading.."></div><a class="post-cover-link has-text-centered skeleton" href="/2017/10/10/01-SLAM-Overview/"><img class="post-cover-img js-img-fadeIn" src="01-SLAM-Overview/%E7%B3%BB%E7%BB%9F%E6%A1%86%E5%9B%BE.jpg" alt="loading.." data-backdrop="true"></a></header><section class="content post-card-content p-4 pb-5"><header><a href="/tags/SLAM"><i class="tag post-item-tag">SLAM</i></a><a href="/tags/Cartographer"><i class="tag post-item-tag">Cartographer</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/10/10/01-SLAM-Overview/">Have Fun with SLAM-01-Overview</a></h2><time class="has-text-grey" datetime="2017-10-10T13:14:05.000Z">2017-10-10</time><p class="is-flex-grow-2 mt-2">认知环境，并能自我定位，是自主式机器人在真实环境中执行任务时非常重要的一项能力。随着无人技术和智能产品不断涌现，SLAM(Simultaneous Localization and Mapping)，即时定位与地图构建，作为其中的一种基础技术，受到了学业界和工业界的高度关注。
+在自身兴趣和课业要求的双从驱动下，我从今年开始学习SLAM的相关知识。在这期间，领略到了SLAM领域的博大精深，数学基础要求比较高，特别是概率学和优化。当还沉浸在漫天的公式无法自拔之时，你会发现，这些理论不过是SLAM海洋的冰山一角。因为实际场景往往有实时性要求，所以，coding 才是更大的挑战，而我还没开始真正踏足这一部分。
+什么是SLAM?SLAM问题可以描述为: 机器人在未知环境中从一个未知位置开始移动，在移动过程中根据位置估..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/10/10/01-SLAM-Overview/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/%E7%94%9F%E6%B4%BB"><i class="tag post-item-tag">生活</i></a><a href="/tags/%E9%9A%8F%E6%83%B3"><i class="tag post-item-tag">随想</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/09/15/%E4%BB%8E%E5%AE%B9%E7%9A%84%E4%BD%A0/">写给从容的你</a></h2><time class="has-text-grey" datetime="2017-09-15T13:24:31.000Z">2017-09-15</time><p class="is-flex-grow-2 mt-2">有几天没有写了，因为情绪比较平静，就连自己也有些吃惊。或许因为，生活从来就对我关照有加:)
+那天晚上，情绪失控，嚎啕大哭。12点回到宿舍，睡不着，翻来覆去。大脑里不断闪现最近发生的事情，那些心酸的回忆，于是再也抑制不住心中的苦闷，任由眼泪肆意流淌。凌晨2点，夜真的好静。虽然我已强忍着抽泣，尽量压制，但沉睡中的室友们终究还是发现了，被这突如其来的噪声。是啊，原本该是宁静的夜晚，为何有人偏偏要扰乱这永恒的生命秩序？
+室友们迷迷糊糊地问我发生了什么，“没事儿，没事儿”，我不知说什么，也许什么也不用说。趴着哭很容易引起鼻塞，于是为了缓解鼻子的难受，我坐了起来。坐在床边的我，看见月光轻轻缓缓，倾泻进来。在这狭小房间里，明朗的月光萦绕在我身旁，仿佛一位老友，静静不言语。此时，房间内的另外两人已再次进入梦乡。理解她们，大..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/09/15/%E4%BB%8E%E5%AE%B9%E7%9A%84%E4%BD%A0/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/Windows"><i class="tag post-item-tag">Windows</i></a><a href="/tags/%E5%B7%A5%E5%85%B7"><i class="tag post-item-tag">工具</i></a><a href="/tags/VPS"><i class="tag post-item-tag">VPS</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/09/11/VPS%E2%80%94-setup/">科学上网之路：搭建VPS+Shdowsocks+SwitchyOmega</a></h2><time class="has-text-grey" datetime="2017-09-11T07:07:07.000Z">2017-09-11</time><p class="is-flex-grow-2 mt-2">时代发展至今，自然环境已阻挡不了人们去寻觅世界的每一个角落。上山下海，无所不行。即便如此，却总有痴妄的人试图建立起一座隐形的高墙，去阻隔所谓的“外来腐化思想”。然而，思想的自由流通，理应不该受到这样的百般阻扰。于是，VPS为那些追求“独立之精神，自由之思想”理念的人开辟了一条绿色通道。
+主流的VPS（虚拟主机）服务器提供商有三家：
+
+linode
+digital ocean
+bandwagon针对个人用户，bandwagon是个不错选择，并且支持支付宝付款。
+
+购买VPS服务购买链接选型参考付款成功后，查看你所购买的VPS服务端的详细信息，点击KiwiVM Control Panel将会看到VPS登录用的IP和port信息。
+然后，点击左侧的Install new OS,选择在Main controls中列..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/09/11/VPS%E2%80%94-setup/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/%E7%94%9F%E6%B4%BB"><i class="tag post-item-tag">生活</i></a><a href="/tags/%E9%9F%B3%E4%B9%90"><i class="tag post-item-tag">音乐</i></a><a href="/tags/%E9%9A%8F%E6%83%B3"><i class="tag post-item-tag">随想</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/09/08/%E5%BE%88%E4%B9%85%E4%BB%A5%E5%89%8D/">很久以前</a></h2><time class="has-text-grey" datetime="2017-09-08T14:40:48.000Z">2017-09-08</time><p class="is-flex-grow-2 mt-2">
+I miss the air   I miss my friendsI miss my mom    I miss it when—— * Millon Years Ago - Adele *
+
+最近总是想起本科时看过的一本书，《麦田里的守望者》。这里的生活，真的很难说让人感到开心。可能最让我高兴的时刻，是学习新鲜知识的时候吧，比如online courses, blogs；而与人有关的，零星点点，少得可怜。
+回想这两年，脑袋里全是早上开门后的第一眼，空荡荡的实验室。白天的时候，每张座椅上都坐着一个聪明的灵魂，他们的脑回路高速运转着。身旁的书本们，似乎也感受到了这份忙碌，不敢打破宁静，缄默不言语。一切也不尽是静悄悄，微信群里的讨论，时常热烈，每次我都得一层层地爬楼。大家的沟通交流，多半是在来往食堂的路上和..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/09/08/%E5%BE%88%E4%B9%85%E4%BB%A5%E5%89%8D/">Read more</a></section></article><article class="post-item-card"><section class="content post-card-content p-4 pb-5"><header><a href="/tags/GPU"><i class="tag post-item-tag">GPU</i></a><a href="/tags/Deep%20Learning"><i class="tag post-item-tag">Deep Learning</i></a><a href="/tags/Windows"><i class="tag post-item-tag">Windows</i></a></header><h2 class="mt-4 mb-0 is-family-serif"><a href="/2017/09/05/AWS-setup/">搭建AWS云计算配置环境</a></h2><time class="has-text-grey" datetime="2017-09-05T08:10:02.000Z">2017-09-05</time><p class="is-flex-grow-2 mt-2">实操是快速有效掌握一门知识的最好途径。随着AI崛起，许多科技热点不断涌现，机器学习当属个中翘楚。想要愉快玩耍机器学习，自然离不开GPU的支持。但对于新手入门，想要自己搭建GPU服务器，工程量显得有些大；再加上囊中羞涩，个人购买GPU实在有些困难。在这种情况下，云计算服务是一个不错的选择。
+什么是云计算？简单说来，云计算就是通过 Internet（“云”）交付服务器、存储空间、数据库、网络、软件和分析等计算服务。提供这些计算服务的公司称为云提供商，他们通常基于用户使用对云计算服务进行收费，类似于家用水电的计费方式。
+云计算服务提供商
+AWS亚马逊出品，市场老大，商业云计算名义上的先驱，主要针对企业级用户，特别是在国内没有开放个人账户。
+
+Azure微软出品，与自家产品无线缝合，一条龙服务，正在追赶AWS。
+
+..</p><a class="button is-default mt-2 has-text-weight-semibold" href="/2017/09/05/AWS-setup/">Read more</a></section></article><section class="paginator is-flex is-justify-content-flex-end is-flex-wrap-wrap mt-5"><a class="extend prev" rel="prev" href="/page/2/"><i class="iconfont icon-prev has-text-grey"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="iconfont icon-next has-text-grey"></i></a></section></section><aside class="column is-hidden-mobile is-4-tablet is-3-widescreen"><style>.search-widget .search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--second-text-color);
+}
+.search-widget .search-content {
+    position: absolute;
+    left: 0;
+    top: calc(100% - 3px);
+    z-index: 2;
+
+    width: 100%;
+    height: 0;
+    max-height: 550px;
+
+    overflow: auto;
+    box-sizing: border-box;
+
+    background: var(--top-bar-bg-color);
+    backdrop-filter: blur(var(--backdropFilter));
+    -webkit-backdrop-filter: blur(var(--backdropFilter));
+
+    border-bottom-left-radius: var(--borderRadius);
+    border-bottom-right-radius: var(--borderRadius);
+    box-shadow: 0 12px 15px rgba(0, 0, 0, 0.08);
+}
+
+.search-widget .search-content a:hover h5 {
+    color: #3273dc!important;
+}
+</style><main class="aside-card-container search-widget is-relative"><label for="searchInput"><div class="is-flex px-4" id="searchButton"><i class="iconfont icon--search1 mr-1"></i><input class="search-input is-flex-grow-1" id="searchInput" placeholder="Search everything.."></div></label><section class="search-content content" id="searchContent"></section></main><script>var searchDatabase = []
+var searchInputEl = document.getElementById('searchInput')
+var searchButtonEl = document.getElementById('searchButton')
+var searchResultEl = document.getElementById('searchContent')
+
+searchInputEl.oninput = function (evt) {
+    var searchValue = evt.srcElement.value
+    var haveSearchValue = Boolean(searchValue.trim())
+    if (!haveSearchValue) {
+        searchResultEl.style.height = 0
+        searchResultEl.innerHTML = null
+        return
+    }
+
+    var searchResults = searching(searchValue)
+
+    if (searchResults.length > 0) {
+        renderSearchResults(searchResults)
+    }
+}
+
+function renderSearchResults(results) {
+    searchResultEl.innerHTML = null
+    var fragment = document.createDocumentFragment()
+
+    results.forEach(function (item) {
+        var link = document.createElement('a')
+        var title = document.createElement('h5')
+        var content = document.createElement('p')
+
+        title.className = 'mb-1'
+        title.innerText = item.title
+        content.innerText = item.content
+
+        link.href = item.link
+        link.appendChild(title)
+        link.appendChild(content)
+        link.className = 'p-4 is-block'
+
+        fragment.appendChild(link)
+    })
+
+    searchResultEl.appendChild(fragment)
+    searchResultEl.style.height = 'auto'
+}
+
+function searching(inputText) {
+    var inputTexts = inputText.split(' ')
+    var searchResults = []
+    inputTexts.forEach(function (searchKey) {
+        var haveSearchValue = Boolean(searchKey.trim())
+        if (!haveSearchValue) return
+
+        var key = searchKey.toLowerCase()
+
+        for (var entry of searchDatabase) {
+            var title = entry.getElementsByTagName('title')[0].textContent
+            var link = entry.getElementsByTagName('link')[0].getAttribute('href')
+            var contentWithTags = entry.getElementsByTagName('content')[0].textContent
+            var rawContent = contentWithTags.trim().replace(/<[^>]+>/g, '').toLowerCase()
+
+            var LENGTH = 80
+            var finalContent = ''
+            var contentLength = rawContent.length
+            var searchResultIdx = rawContent.indexOf(key)
+
+            var startIdx = searchResultIdx - 20,
+                endIdx = startIdx + LENGTH
+
+            if (startIdx < 0) {
+                startIdx = 0
+                endIdx = 100
+            }
+
+            endIdx > contentLength && (endIdx = contentLength)
+
+            finalContent = rawContent.substring(startIdx, endIdx)
+
+            if (title.indexOf(key) > -1 || searchResultIdx > -1) {
+                searchResults.push({
+                    link: link,
+                    title: title,
+                    content: finalContent
+                })
+            }
+        }
+    })
+    return searchResults
+}
+
+searchButtonEl.onclick = function () {
+    if (searchDatabase.length > 0) return;
+
+    fetch(window.location.href + '/search.xml').then(res => res.text()).then(res => {
+        var domparser = new DOMParser
+        var doc = domparser.parseFromString(res, 'application/xml')
+        searchDatabase = doc.getElementsByTagName('search')[0].children
+    })
+}</script><main class="aside-card-container profile-widget"><!-- todo: 使用取色工具动态阴影--><section class="is-flex is-flex-direction-column is-justify-content-center is-align-items-center"><section class="is-flex is-justify-content-center avatar is-clipped skeleton"><!-- debug images "https://api.ixiaowai.cn/gqapi/gqapi.php"--><img class="js-img-fadeIn" src="/images/avatar.jpg" alt="user avatar"></section><h3 class="user-name">Haojen</h3><blockquote class="has-text-centered is-relative"><span style="margin-bottom: 5px;">May the Force be with you</span></blockquote><address class="has-text-centered has-text-grey"><i class="iconfont icon-location" style="margin-right: 5px;"></i><span class="has-text-grey">In the dust</span></address></section><section class="sns-container is-flex is-justify-content-center is-align-items-center"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/haojen"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section></main><main class="aside-card-container recent-widget"><h3>Recent</h3><ul><li class="is-flex"><!-- change to element replace image placeholder--><img class="js-img-fadeIn" src="https://ui-avatars.com/api/?background=f5f5f5&amp;name=Ha" alt="cover"><!--else--><!--    div.post-img-placeholder--><section class="is-flex-grow-2"><p class="has-text-weight-semibold" style="line-height: 20px; font-size: 14px"><a href="/2017/11/09/06-SLAM-Raspi/">Have Fun with SLAM-06-Raspberry Pi 3</a></p><time class="has-text-weight-semibold has-text-grey" datetime="2017-11-09T13:00:52.000Z">2017-11-09</time></section></li><li class="is-flex"><!-- change to element replace image placeholder--><img class="js-img-fadeIn" src="https://ui-avatars.com/api/?background=f5f5f5&amp;name=Ha" alt="cover"><!--else--><!--    div.post-img-placeholder--><section class="is-flex-grow-2"><p class="has-text-weight-semibold" style="line-height: 20px; font-size: 14px"><a href="/2017/11/09/05-SLAM-IMU/">Have Fun with SLAM-05-IMU</a></p><time class="has-text-weight-semibold has-text-grey" datetime="2017-11-09T12:45:50.000Z">2017-11-09</time></section></li><li class="is-flex"><!-- change to element replace image placeholder--><img class="js-img-fadeIn" src="https://ui-avatars.com/api/?background=f5f5f5&amp;name=Ha" alt="cover"><!--else--><!--    div.post-img-placeholder--><section class="is-flex-grow-2"><p class="has-text-weight-semibold" style="line-height: 20px; font-size: 14px"><a href="/2017/11/08/04-SLAM-Configuration/">Have Fun with SLAM-04-Configuration</a></p><time class="has-text-weight-semibold has-text-grey" datetime="2017-11-08T02:54:59.000Z">2017-11-08</time></section></li><li class="is-flex"><!-- change to element replace image placeholder--><img class="js-img-fadeIn" src="03-SLAM-Installation/%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90.png" alt="cover"><!--else--><!--    div.post-img-placeholder--><section class="is-flex-grow-2"><p class="has-text-weight-semibold" style="line-height: 20px; font-size: 14px"><a href="/2017/11/07/03-SLAM-Installation/">Have Fun with SLAM-03-Installation</a></p><time class="has-text-weight-semibold has-text-grey" datetime="2017-11-07T13:53:18.000Z">2017-11-07</time></section></li><li class="is-flex"><!-- change to element replace image placeholder--><img class="js-img-fadeIn" src="https://ui-avatars.com/api/?background=f5f5f5&amp;name=Ha" alt="cover"><!--else--><!--    div.post-img-placeholder--><section class="is-flex-grow-2"><p class="has-text-weight-semibold" style="line-height: 20px; font-size: 14px"><a href="/2017/11/07/02-SLAM-Cartograher/">Have Fun with SLAM-02-Cartographer</a></p><time class="has-text-weight-semibold has-text-grey" datetime="2017-11-07T07:11:44.000Z">2017-11-07</time></section></li><li class="is-flex"><!-- change to element replace image placeholder--><img class="js-img-fadeIn" src="01-SLAM-Overview/%E7%B3%BB%E7%BB%9F%E6%A1%86%E5%9B%BE.jpg" alt="cover"><!--else--><!--    div.post-img-placeholder--><section class="is-flex-grow-2"><p class="has-text-weight-semibold" style="line-height: 20px; font-size: 14px"><a href="/2017/10/10/01-SLAM-Overview/">Have Fun with SLAM-01-Overview</a></p><time class="has-text-weight-semibold has-text-grey" datetime="2017-10-10T13:14:05.000Z">2017-10-10</time></section></li></ul></main><main class="aside-card-container categories-widget category-page"><h3>Categories</h3><section><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%96%9C%E7%88%B1/">喜爱</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E8%AE%B0/">日记</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%A7%AF%E7%B4%AF/">积累</a><span class="category-list-count">13</span></li></ul></section></main><main class="aside-card-container archives-widget"><h3>Archives</h3><section><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a><span class="archive-list-count">1</span></li></ul></section></main><main class="aside-card-container tag-widget"><h3>Tags</h3><section><a href="/tags/%E6%B1%82%E8%81%8C"><span class="tag post-item-tag" style="margin-bottom: 5px;">求职</span></a><a href="/tags/%E7%AB%A5%E8%AF%9D"><span class="tag post-item-tag" style="margin-bottom: 5px;">童话</span></a><a href="/tags/%E6%83%85%E7%BB%AA"><span class="tag post-item-tag" style="margin-bottom: 5px;">情绪</span></a><a href="/tags/SLAM"><span class="tag post-item-tag" style="margin-bottom: 5px;">SLAM</span></a><a href="/tags/Cartographer"><span class="tag post-item-tag" style="margin-bottom: 5px;">Cartographer</span></a><a href="/tags/%E9%98%85%E8%AF%BB"><span class="tag post-item-tag" style="margin-bottom: 5px;">阅读</span></a><a href="/tags/%E7%94%9F%E6%B4%BB"><span class="tag post-item-tag" style="margin-bottom: 5px;">生活</span></a><a href="/tags/%E5%BF%83%E6%83%85"><span class="tag post-item-tag" style="margin-bottom: 5px;">心情</span></a><a href="/tags/GPU"><span class="tag post-item-tag" style="margin-bottom: 5px;">GPU</span></a><a href="/tags/Deep%20Learning"><span class="tag post-item-tag" style="margin-bottom: 5px;">Deep Learning</span></a><a href="/tags/Windows"><span class="tag post-item-tag" style="margin-bottom: 5px;">Windows</span></a><a href="/tags/%E6%A2%A6"><span class="tag post-item-tag" style="margin-bottom: 5px;">梦</span></a><a href="/tags/%E8%AF%BE%E7%A8%8B"><span class="tag post-item-tag" style="margin-bottom: 5px;">课程</span></a><a href="/tags/%E6%88%90%E9%95%BF"><span class="tag post-item-tag" style="margin-bottom: 5px;">成长</span></a><a href="/tags/%E6%97%85%E8%A1%8C"><span class="tag post-item-tag" style="margin-bottom: 5px;">旅行</span></a><a href="/tags/%E9%9D%A2%E8%AF%95"><span class="tag post-item-tag" style="margin-bottom: 5px;">面试</span></a><a href="/tags/%E5%B7%A5%E5%85%B7"><span class="tag post-item-tag" style="margin-bottom: 5px;">工具</span></a><a href="/tags/VPS"><span class="tag post-item-tag" style="margin-bottom: 5px;">VPS</span></a><a href="/tags/%E9%9F%B3%E4%B9%90"><span class="tag post-item-tag" style="margin-bottom: 5px;">音乐</span></a><a href="/tags/%E7%90%90%E7%A2%8E"><span class="tag post-item-tag" style="margin-bottom: 5px;">琐碎</span></a><a href="/tags/%E4%BA%BA%E7%BE%A4"><span class="tag post-item-tag" style="margin-bottom: 5px;">人群</span></a><a href="/tags/hexo"><span class="tag post-item-tag" style="margin-bottom: 5px;">hexo</span></a><a href="/tags/%E9%9A%8F%E6%83%B3"><span class="tag post-item-tag" style="margin-bottom: 5px;">随想</span></a><a href="/tags/%E5%9F%8E%E5%B8%82"><span class="tag post-item-tag" style="margin-bottom: 5px;">城市</span></a><a href="/tags/%E6%83%85%E6%84%9F"><span class="tag post-item-tag" style="margin-bottom: 5px;">情感</span></a><a href="/tags/%E8%AF%97%E6%AD%8C"><span class="tag post-item-tag" style="margin-bottom: 5px;">诗歌</span></a><a href="/tags/%E5%B0%9D%E8%AF%95"><span class="tag post-item-tag" style="margin-bottom: 5px;">尝试</span></a><a href="/tags/%E7%99%BB%E9%AB%98"><span class="tag post-item-tag" style="margin-bottom: 5px;">登高</span></a></section></main></aside></div></article><script>$claudia.fadeInImage(null, $claudia.blurBackdropImg)
+
+window.addEventListener('resize', $claudia.throttle(function () {
+    var images = document.querySelectorAll('.js-img-fadeIn')
+
+    images.forEach($claudia.blurBackdropImg)
+}, 150))</script></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/haojen"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> Haojen 2021</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script>$claudia.fadeInImage(null, $claudia.blurBackdropImg)
+
+window.addEventListener('resize', $claudia.throttle(function () {
+    var images = document.querySelectorAll('.js-img-fadeIn')
+
+    images.forEach($claudia.blurBackdropImg)
+}, 150))</script></body></html>
