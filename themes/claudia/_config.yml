@@ -51,7 +51,7 @@ comment_disqus:
 appearance: auto # Default value is auto
 
 # Miscellaneous
-favicon: /images/favicon.png
+favicon: /images/avatar.jpg
 
 # Google Analytics
 ga_track_id:
@@ -61,4 +61,4 @@ ga_domain:
 ba_track_id:
 
 # picture of about page
-about_pic: about.png
+about_pic: about2.png
