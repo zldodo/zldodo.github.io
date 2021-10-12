@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Have Fun with SLAM-03-Installation | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="现在，让我们正式开始SLAM吧！需要准备1台或2台电脑，一个移动平台和SLAM传感器（激光雷达或视觉传感器，如Kinect）。我们采用的传感器是激光雷达，移动平台是Turtlebot2，SLAM算法是 Google公司发布的Cartographer。此外，我们将树莓派作为下位机，搭载在Turtlebot2上，负责记录激光雷达和IMU（Inertial Measurement Unit），odome">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Have Fun with SLAM-03-Installation">
+<meta property="og:url" content="http://example.com/2017/11/07/03-SLAM-Installation/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="现在，让我们正式开始SLAM吧！需要准备1台或2台电脑，一个移动平台和SLAM传感器（激光雷达或视觉传感器，如Kinect）。我们采用的传感器是激光雷达，移动平台是Turtlebot2，SLAM算法是 Google公司发布的Cartographer。此外，我们将树莓派作为下位机，搭载在Turtlebot2上，负责记录激光雷达和IMU（Inertial Measurement Unit），odome">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2017/11/07/03-SLAM-Installation/03-SLAM-Installation/%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90.png">
+<meta property="article:published_time" content="2017-11-07T13:53:18.000Z">
+<meta property="article:modified_time" content="2021-10-12T00:23:40.119Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="SLAM">
+<meta property="article:tag" content="Cartographer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2017/11/07/03-SLAM-Installation/03-SLAM-Installation/%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-03-SLAM-Installation" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2017/11/07/03-SLAM-Installation/" class="article-date">
+  <time class="dt-published" datetime="2017-11-07T13:53:18.000Z" itemprop="datePublished">2017-11-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Have Fun with SLAM-03-Installation
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>现在，让我们正式开始SLAM吧！需要准备1台或2台电脑，一个移动平台和SLAM传感器（激光雷达或视觉传感器，如Kinect）。我们采用的传感器是激光雷达，移动平台是Turtlebot2，SLAM算法是 Google公司发布的Cartographer。此外，我们将树莓派作为下位机，搭载在Turtlebot2上，负责记录激光雷达和IMU（Inertial Measurement Unit），odometry等传感器信息，然后发送至上位机（一台笔记本电脑）。r然后在上位机上，运行SLAM算法，实时显示地图结果。</p>
+<span id="more"></span>
+
+<h2 id="系统组成"><a href="#系统组成" class="headerlink" title="系统组成"></a>系统组成</h2><p>目前，搭建的地图构建系统由激光雷达、TurtleBot2、树莓派、笔记本电脑四部分组成。下面分别介绍各部分的功能：</p>
+<ul>
+<li>激光雷达：信息采集前端。激光雷达发出激光束，测得距离信息，从而能获得环境的轮廓形状。</li>
+<li>TurtleBot2：移动平台。Turtlebot是一个开源的硬件平台和移动基站，集成了IMU，里程计等传感器，采用ROS操作系统，给开发者的应用程序开发带来极大的便利。</li>
+<li>树莓派：下位机。树莓派一款基于ARM的微型电脑主板，又称卡片式电脑。在本项目中，其负责融合激光雷达和TurtleBot2的信息，然后发送给上位机，以进行后续操作。同时，它可以接收上位机指令，控制TurtleBot的移动。 </li>
+<li>笔记本电脑：上位机。中央控制处理端，获取下位机的传感器信息，然后运行SlAM算法，实时产生地图。同时，控制TurtleBot在环境中的运动。</li>
+</ul>
+<p>系统各部分的连接方式如图所示。我们利用3D打印制作了一个固定制作，将激光雷达安装到TurtleBot上。将激光雷达数据线和TurtleBot通讯线连接到树莓派上，然后树莓派与上位机电脑通过局域网进行通信。</p>
+<p><img src="03-SLAM-Installation/%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90.png" alt="系统组成实物图"></p>
+<h2 id="操作系统环境安装"><a href="#操作系统环境安装" class="headerlink" title="操作系统环境安装"></a>操作系统环境安装</h2><p>（树莓派和笔记本的安装配置相同）</p>
+<ol>
+<li><p>安装Ubuntu操作系统和ROS操作系统。可选有两种方式：</p>
+<ul>
+<li>Ubuntu 14.04 (Trusty) ，ROS Indigo</li>
+<li>Ubuntu 16.04 (Xenial) ， ROS Kinetic</li>
+</ul>
+</li>
+<li><p>在ROS下安装Turlebot。<br> 安装过程参见<a target="_blank" rel="noopener" href="http://wiki.ros.org/Robots/TurtleBot">ROS/TurtleBot</a>。</p>
+</li>
+<li><p>安装cartographer算法包。有两个选择：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://google-cartographer-ros.readthedocs.io/en/latest/">cartographer_ros</a> 。这个包仅包含cartographer必需的函数。</li>
+<li><a target="_blank" rel="noopener" href="https://google-cartographer-ros-for-turtlebots.readthedocs.io/en/latest/">cartographer_turtlebot</a>。这个包涵盖了cartographer，cartographer_ros和turtlebot相关的文件，内容更多。</li>
+</ul>
+</li>
+<li><p>安装传感器驱动。<br> 如果使用激光雷达，indigo版本需要安装<a target="_blank" rel="noopener" href="https://github.com/yaozh16/Cartographer/wiki/use_Hokuyo_Laser_Scanners_with_the_hokuyo_node">hokuyo_node</a>，kinetic版本需要安装<a target="_blank" rel="noopener" href="https://github.com/yaozh16/Cartographer/wiki/hokuyo_laser_scanner_configuration_for_ros_kinetic">urg_node</a>。</p>
+</li>
+</ol>
+<p>Ps:我在Kinetic版本下安装完cartographer_turtlebot后，urg_node就已经默认安装好了，无需再安装。</p>
+<p>一切大功告成！！！</p>
+<p>刚开始安装，可能会遇到很多小问题。没关系，不要因此沮丧哦，可以将出现的问题粘贴到<a target="_blank" rel="noopener" href="https://answers.ros.org/questions/">ROS answer</a>，或是仔细阅读上述安装文档，一步步排查问题所在，最终都会解决的。欢迎交流哈～</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2017/11/07/03-SLAM-Installation/" data-id="ckuncq00f000dsouk6h2md5ec" data-title="Have Fun with SLAM-03-Installation" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/11/08/04-SLAM-Configuration/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Have Fun with SLAM-04-Configuration
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2017/11/07/02-SLAM-Cartograher/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Have Fun with SLAM-02-Cartographer</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%96%9C%E7%88%B1/">喜爱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A2%E7%9F%A5/">探知</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E8%AE%B0/">日记</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%A7%AF%E7%B4%AF/">积累</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cartographer/" rel="tag">Cartographer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Deep-Learning/" rel="tag">Deep Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SLAM/" rel="tag">SLAM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VPS/" rel="tag">VPS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Windows/" rel="tag">Windows</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%BA%BA%E7%BE%A4/" rel="tag">人群</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9F%8E%E5%B8%82/" rel="tag">城市</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B0%9D%E8%AF%95/" rel="tag">尝试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BF%83%E6%83%85/" rel="tag">心情</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%83%85%E6%84%9F/" rel="tag">情感</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%83%85%E7%BB%AA/" rel="tag">情绪</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%85%E8%A1%8C/" rel="tag">旅行</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%A2%A6/" rel="tag">梦</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B1%82%E8%81%8C/" rel="tag">求职</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%90%90%E7%A2%8E/" rel="tag">琐碎</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%94%9F%E6%B4%BB/" rel="tag">生活</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%99%BB%E9%AB%98/" rel="tag">登高</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AB%A5%E8%AF%9D/" rel="tag">童话</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%97%E6%AD%8C/" rel="tag">诗歌</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%98%85%E8%AF%BB/" rel="tag">阅读</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9A%8F%E6%83%B3/" rel="tag">随想</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9F%B3%E4%B9%90/" rel="tag">音乐</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cartographer/" style="font-size: 17.5px;">Cartographer</a> <a href="/tags/Deep-Learning/" style="font-size: 10px;">Deep Learning</a> <a href="/tags/GPU/" style="font-size: 11.25px;">GPU</a> <a href="/tags/SLAM/" style="font-size: 17.5px;">SLAM</a> <a href="/tags/VPS/" style="font-size: 10px;">VPS</a> <a href="/tags/Windows/" style="font-size: 11.25px;">Windows</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/%E4%BA%BA%E7%BE%A4/" style="font-size: 16.25px;">人群</a> <a href="/tags/%E5%9F%8E%E5%B8%82/" style="font-size: 10px;">城市</a> <a href="/tags/%E5%B0%9D%E8%AF%95/" style="font-size: 11.25px;">尝试</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a> <a href="/tags/%E5%BF%83%E6%83%85/" style="font-size: 20px;">心情</a> <a href="/tags/%E6%83%85%E6%84%9F/" style="font-size: 11.25px;">情感</a> <a href="/tags/%E6%83%85%E7%BB%AA/" style="font-size: 10px;">情绪</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 11.25px;">成长</a> <a href="/tags/%E6%97%85%E8%A1%8C/" style="font-size: 11.25px;">旅行</a> <a href="/tags/%E6%A2%A6/" style="font-size: 10px;">梦</a> <a href="/tags/%E6%B1%82%E8%81%8C/" style="font-size: 12.5px;">求职</a> <a href="/tags/%E7%90%90%E7%A2%8E/" style="font-size: 13.75px;">琐碎</a> <a href="/tags/%E7%94%9F%E6%B4%BB/" style="font-size: 18.75px;">生活</a> <a href="/tags/%E7%99%BB%E9%AB%98/" style="font-size: 10px;">登高</a> <a href="/tags/%E7%AB%A5%E8%AF%9D/" style="font-size: 10px;">童话</a> <a href="/tags/%E8%AF%97%E6%AD%8C/" style="font-size: 11.25px;">诗歌</a> <a href="/tags/%E8%AF%BE%E7%A8%8B/" style="font-size: 10px;">课程</a> <a href="/tags/%E9%98%85%E8%AF%BB/" style="font-size: 15px;">阅读</a> <a href="/tags/%E9%9A%8F%E6%83%B3/" style="font-size: 15px;">随想</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 10px;">面试</a> <a href="/tags/%E9%9F%B3%E4%B9%90/" style="font-size: 11.25px;">音乐</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/10/">October 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">May 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">January 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/10/12/The-old-man-and-the-sea/">整理·THE OLD MAN ANF THE SEA</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/14/Travel-in-Heidelberg/">一个人走在海德堡</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/06/%E5%91%BC%E5%95%B8%E5%B1%B1%E5%BA%84/">呼啸凛冽的爱</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/05/AWS%E5%A4%A9%E4%B8%8B%E6%B2%A1%E6%9C%89%E5%85%8D%E8%B4%B9%E7%9A%84%E5%8D%88%E9%A4%90/">吓坏了！AWS免费套餐差点变成收费黑洞！</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/05/%E6%B3%AF%E7%84%B6%E4%BC%97%E4%BA%BA%E7%9F%A3/">泯然众人矣</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
